@@ -1,1447 +1,1364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-<title>Space Impact Clone - Enhanced</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; color: #cfe; font-family: monospace; }
-  #game { position: absolute; inset: 0; display: block; background: #000; touch-action: none; }
-  #hud {
-    position: absolute; top: 8px; left: 8px; right: 8px;
-    display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none;
-    font-size: 13px; text-shadow: 0 0 4px #000;
-  }
-  #hud .stat {
-    background: rgba(0,20,40,0.55); padding: 4px 8px; border: 1px solid #2af;
-    border-radius: 4px;
-  }
-  #hud .stat b { color: #6ef; }
-  #controls {
-    position: absolute; top: 44px; right: 8px;
-    width: 280px; max-height: calc(100% - 60px); overflow-y: auto;
-    background: rgba(0,15,30,0.85); border: 1px solid #2af;
-    border-radius: 6px; padding: 10px; font-size: 12px;
-    transition: transform 0.25s ease;
-  }
-  #controls.hidden { transform: translateX(calc(100% + 20px)); }
-  #controls h3 { font-size: 13px; margin-bottom: 6px; color: #6ef; border-bottom: 1px solid #2af; padding-bottom: 4px; }
-  .row { display: flex; align-items: center; justify-content: space-between; margin: 4px 0; gap: 6px; }
-  .row label { flex: 1; color: #9cf; }
-  .row input[type=range] { flex: 1.2; }
-  .row .val { width: 44px; text-align: right; color: #fff; font-variant-numeric: tabular-nums; }
-  .btns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-  .btns button {
-    flex: 1 1 45%; background: #0a2540; color: #cfe; border: 1px solid #2af;
-    padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px;
-  }
-  .btns button:hover { background: #134; }
-  .btns button.active { background: #2af; color: #001; }
-  #togglePanel {
-    position: absolute; top: 44px; right: 8px;
-    background: #0a2540; color: #cfe; border: 1px solid #2af;
-    padding: 6px 10px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px; z-index: 2;
-  }
-  #touchArea {
-    position: absolute; bottom: 0; left: 0; width: 50%; height: 40%;
-    pointer-events: auto;
-  }
-  #joystickBase {
-    position: absolute; left: 30px; bottom: 30px;
-    width: 110px; height: 110px; border-radius: 50%;
-    background: rgba(40,170,255,0.15); border: 2px solid rgba(40,170,255,0.5);
-    display: none;
-  }
-  #joystickKnob {
-    position: absolute; left: 30px; top: 30px;
-    width: 50px; height: 50px; border-radius: 50%;
-    background: rgba(100,230,255,0.5); border: 2px solid #6ef;
-    display: none;
-  }
-  #overlay {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    flex-direction: column; background: rgba(0,0,0,0.7); z-index: 5; pointer-events: auto;
-  }
-  #overlay h1 { color: #6ef; font-size: 32px; margin-bottom: 12px; text-shadow: 0 0 10px #2af; }
-  #overlay p { color: #cfe; margin-bottom: 14px; font-size: 14px; text-align: center; padding: 0 20px; }
-  #overlay button {
-    background: #0a2540; color: #cfe; border: 2px solid #2af; padding: 10px 24px;
-    border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 16px;
-  }
-  #overlay button:hover { background: #2af; color: #001; }
-  #overlay.hidden { display: none; }
-  #minimap {
-    position: absolute; bottom: 8px; right: 8px;
-    width: 140px; height: 80px;
-    background: rgba(0,15,30,0.7); border: 1px solid #2af; border-radius: 4px;
-  }
-  #powerupDisplay {
-    position: absolute; bottom: 100px; left: 8px;
-    display: flex; flex-direction: column; gap: 4px;
-    pointer-events: none;
-  }
-  .powerup-icon {
-    background: rgba(0,20,40,0.8); border: 1px solid #6ef;
-    padding: 4px 8px; border-radius: 4px; font-size: 11px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .powerup-icon .bar {
-    width: 60px; height: 4px; background: #333; border-radius: 2px; overflow: hidden;
-  }
-  .powerup-icon .bar-fill {
-    height: 100%; background: #6ef; transition: width 0.1s;
-  }
-  @media (max-width: 700px) {
-    #controls { width: 240px; font-size: 11px; }
-    #minimap { width: 110px; height: 60px; }
-    #hud .stat { font-size: 11px; padding: 3px 6px; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wenzel Aboboto | Software Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* =========================================
+           CSS VARIABLES & RESET
+           ========================================= */
+        :root {
+            --bg-primary: #06060a;
+            --bg-secondary: #0c0c14;
+            --bg-tertiary: #12121c;
+            --text-primary: #f8f9fa;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6c6c80;
+            
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-purple: #9b51e0;
+            --accent-pink: #f093fb;
+            
+            --gradient-main: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+            --gradient-hover: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-hover-border: rgba(255, 255, 255, 0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            
+            --shadow-glow: 0 0 30px rgba(79, 172, 254, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-blue) var(--bg-primary);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 4px; }
+
+        /* =========================================
+           BACKGROUND ANIMATED ORBS
+           ========================================= */
+        .bg-orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.25;
+            animation: floatOrb 25s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: var(--accent-purple);
+            top: -10%; left: -10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: var(--accent-cyan);
+            top: 40%; right: -15%;
+            animation-delay: -5s;
+            animation-duration: 30s;
+        }
+
+        .orb-3 {
+            width: 400px; height: 400px;
+            background: var(--accent-pink);
+            bottom: -10%; left: 30%;
+            animation-delay: -10s;
+            animation-duration: 20s;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        /* =========================================
+           UTILITY CLASSES
+           ========================================= */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 800;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .glass:hover {
+            border-color: var(--glass-hover-border);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.05);
+        }
+
+        /* =========================================
+           NAVIGATION
+           ========================================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            background: rgba(6, 6, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 14px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-main);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* =========================================
+           HERO SECTION
+           ========================================= */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero-greeting {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
+            font-size: 18px;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 0.2s;
+        }
+
+        .hero-name {
+            font-size: clamp(48px, 8vw, 84px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 0.4s;
+        }
+
+        .hero-name .gradient-text {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title {
+            font-size: clamp(24px, 4vw, 40px);
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 0.6s;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 0.8s;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 1s;
+        }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 12px;
+            letter-spacing: 2px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* =========================================
+           ABOUT SECTION
+           ========================================= */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .about-text strong {
+            color: var(--text-primary);
+        }
+
+        .terminal-window {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header {
+            background: var(--bg-tertiary);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .terminal-title {
+            margin-left: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .terminal-body {
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .terminal-line {
+            margin-bottom: 8px;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-cyan);
+        }
+
+        .terminal-cmd {
+            color: var(--accent-pink);
+        }
+
+        .terminal-output {
+            color: var(--text-secondary);
+            padding-left: 16px;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--accent-cyan);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* =========================================
+           SKILLS SECTION
+           ========================================= */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .skill-card {
+            padding: 32px;
+            text-align: center;
+        }
+
+        .skill-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(79, 172, 254, 0.1);
+            color: var(--accent-cyan);
+            font-size: 24px;
+            transition: var(--transition);
+        }
+
+        .skill-card:hover .skill-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(79, 172, 254, 0.2);
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .skill-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            background: rgba(255,255,255,0.05);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* =========================================
+           GITHUB INTEGRATION (Simulated)
+           ========================================= */
+        .github-section {
+            padding: 80px 0;
+        }
+
+        .github-card {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .github-graph {
+            display: grid;
+            grid-template-columns: repeat(52, 1fr);
+            gap: 4px;
+            margin: 30px auto;
+            max-width: 800px;
+        }
+
+        .github-day {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.03);
+            transition: var(--transition);
+        }
+
+        .github-day.level-1 { background: rgba(0, 242, 254, 0.15); }
+        .github-day.level-2 { background: rgba(0, 242, 254, 0.35); }
+        .github-day.level-3 { background: rgba(0, 242, 254, 0.6); }
+        .github-day.level-4 { background: rgba(0, 242, 254, 0.9); }
+
+        .github-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .github-stat {
+            text-align: center;
+        }
+
+        .github-stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .github-stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* =========================================
+           EXPERIENCE SECTION
+           ========================================= */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-purple), transparent);
+        }
+
+        .timeline-item {
+            padding-left: 40px;
+            margin-bottom: 48px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 3px solid var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .timeline-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+        }
+
+        .timeline-role {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .timeline-company {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .timeline-desc li {
+            margin-bottom: 8px;
+            list-style-type: '▹ ';
+            color: var(--text-secondary);
+        }
+        
+        .timeline-desc li::marker {
+            color: var(--accent-cyan);
+        }
+
+        /* =========================================
+           PROJECTS SECTION
+           ========================================= */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+
+        .project-card {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-image {
+            height: 200px;
+            background: var(--gradient-main);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg-primary), transparent);
+        }
+
+        .project-image i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: rgba(255,255,255,0.2);
+            z-index: 1;
+        }
+
+        .project-content {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .project-tech span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.08);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .project-links a {
+            color: var(--text-secondary);
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .project-links a:hover {
+            color: var(--accent-cyan);
+            transform: translateY(-2px);
+        }
+
+        /* =========================================
+           CONTACT SECTION
+           ========================================= */
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-content p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .contact-email {
+            display: inline-block;
+            font-size: clamp(24px, 4vw, 36px);
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            position: relative;
+            transition: var(--transition);
+            margin-bottom: 40px;
+        }
+
+        .contact-email::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-main);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+
+        .contact-email:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .contact-email:hover {
+            color: var(--accent-cyan);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 20px;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2);
+        }
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+        .footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .footer p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* =========================================
+           ANIMATIONS
+           ========================================= */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN
+           ========================================= */
+        @media (max-width: 992px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section { padding: 80px 0; }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--bg-secondary);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 40px;
+                transition: var(--transition);
+                border-left: 1px solid var(--glass-border);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+                z-index: 1001;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .github-graph {
+                grid-template-columns: repeat(26, 1fr);
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
-<canvas id="game"></canvas>
 
-<div id="hud">
-  <div class="stat">Score: <b id="score">0</b></div>
-  <div class="stat">Lives: <b id="lives">3</b></div>
-  <div class="stat">HP: <b id="hp">100</b></div>
-  <div class="stat">Combo: <b id="combo">0</b>x</div>
-  <div class="stat">FPS: <b id="fps">0</b></div>
-  <div class="stat">Enemies: <b id="ecount">0</b></div>
-  <div class="stat">Bullets: <b id="bcount">0</b></div>
-  <div class="stat">Wave: <b id="wave">1</b></div>
-</div>
+    <!-- Background Orbs -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-<button id="togglePanel">☰</button>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">&lt;W<span>A</span>/&gt;</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
 
-<div id="controls">
-  <h3>Parameters</h3>
-  <div class="row"><label>Spawn Rate</label><input type="range" id="spawnRate" min="0.1" max="5" step="0.1" value="1.2"><span class="val" id="spawnRateV">1.2</span></div>
-  <div class="row"><label>Enemy Speed</label><input type="range" id="enemySpeed" min="0.5" max="8" step="0.1" value="2.5"><span class="val" id="enemySpeedV">2.5</span></div>
-  <div class="row"><label>Projectile Speed</label><input type="range" id="bulletSpeed" min="3" max="20" step="0.5" value="9"><span class="val" id="bulletSpeedV">9</span></div>
-  <div class="row"><label>Fire Rate</label><input type="range" id="fireRate" min="1" max="25" step="0.5" value="8"><span class="val" id="fireRateV">8</span></div>
-  <div class="row"><label>Move Speed</label><input type="range" id="moveSpeed" min="1" max="12" step="0.5" value="5"><span class="val" id="moveSpeedV">5</span></div>
-  <div class="row"><label>Boss HP</label><input type="range" id="bossHP" min="50" max="1000" step="10" value="250"><span class="val" id="bossHPV">250</span></div>
-  <div class="row"><label>Difficulty</label><input type="range" id="difficulty" min="0.5" max="3" step="0.1" value="1"><span class="val" id="difficultyV">1.0</span></div>
-  <div class="row"><label>Max Enemies</label><input type="range" id="maxEnemies" min="3" max="80" step="1" value="25"><span class="val" id="maxEnemiesV">25</span></div>
-  <div class="row"><label>Boss Threshold</label><input type="range" id="bossThreshold" min="200" max="5000" step="100" value="1500"><span class="val" id="bossThresholdV">1500</span></div>
-  <div class="row"><label>Powerup Rate</label><input type="range" id="powerupRate" min="0" max="1" step="0.05" value="0.15"><span class="val" id="powerupRateV">0.15</span></div>
-  <div class="btns">
-    <button id="pauseBtn">Pause</button>
-    <button id="restartBtn">Restart</button>
-    <button id="hitboxBtn">Hitboxes</button>
-    <button id="particleBtn" class="active">Particles</button>
-    <button id="soundBtn" class="active">Sound</button>
-  </div>
-</div>
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <p class="hero-greeting">// Hello world, I am</p>
+                <h1 class="hero-name">Wenzel <span class="gradient-text">Aboboto</span></h1>
+                <h2 class="hero-title">Software Engineer & Cloud Architect.</h2>
+                <p class="hero-desc">
+                    I design and build scalable, high-performance digital experiences. 
+                    Specializing in full-stack development, cloud infrastructure, and crafting 
+                    elegant solutions to complex engineering problems.
+                </p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i> View My Work
+                    </a>
+                    <a href="#contact" class="btn btn-secondary">
+                        <i class="fas fa-paper-plane"></i> Get In Touch
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <span>SCROLL</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
 
-<canvas id="minimap" width="140" height="80"></canvas>
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">01. About Me</span>
+                <h2 class="section-title">Engineering the Future</h2>
+                <p class="section-subtitle">A brief look at my journey, philosophy, and what drives me to code.</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-text reveal">
+                    <p>
+                        Hello! I'm <strong>Wenzel</strong>, a passionate Software Engineer with a knack for building 
+                        robust, scalable, and user-centric applications. My journey in tech started with a curiosity 
+                        about how things work under the hood, which quickly evolved into a career dedicated to 
+                        crafting exceptional digital products.
+                    </p>
+                    <p>
+                        I thrive in the intersection of <strong>backend architecture</strong> and <strong>frontend elegance</strong>. 
+                        Whether it's optimizing database queries for millisecond latency, designing microservices, 
+                        or building pixel-perfect UI components, I bring a meticulous, problem-solving mindset to every project.
+                    </p>
+                    <p>
+                        When I'm not pushing commits, you'll find me exploring new cloud technologies, 
+                        contributing to open-source, or mentoring the next generation of developers.
+                    </p>
+                </div>
+                <div class="terminal-window reveal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                        <span class="terminal-title">wenzel@portfolio:~</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span> <span class="terminal-cmd">cat about_wenzel.json</span>
+                        </div>
+                        <div class="terminal-output">{</div>
+                        <div class="terminal-output">&nbsp;&nbsp;"role": "Full Stack Engineer",</div>
+                        <div class="terminal-output">&nbsp;&nbsp;"location": "Earth 🌍",</div>
+                        <div class="terminal-output">&nbsp;&nbsp;"languages": ["JS", "Python", "Go", "Rust"],</div>
+                        <div class="terminal-output">&nbsp;&nbsp;"passions": ["Cloud", "AI", "Open Source"],</div>
+                        <div class="terminal-output">&nbsp;&nbsp;"current_focus": "Building scalable systems",</div>
+                        <div class="terminal-output">&nbsp;&nbsp;"coffee_level": "Critical ☕"</div>
+                        <div class="terminal-output">}</div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span> <span class="terminal-cursor"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div id="powerupDisplay"></div>
+    <!-- Skills Section -->
+    <section class="section" id="skills">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">02. Tech Stack</span>
+                <h2 class="section-title">Skills & Expertise</h2>
+                <p class="section-subtitle">Technologies and tools I use to bring ideas to life.</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card glass reveal">
+                    <div class="skill-icon"><i class="fas fa-code"></i></div>
+                    <h3>Frontend</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Next.js</span>
+                        <span class="skill-tag">TypeScript</span>
+                        <span class="skill-tag">Tailwind</span>
+                        <span class="skill-tag">Vue.js</span>
+                    </div>
+                </div>
+                <div class="skill-card glass reveal">
+                    <div class="skill-icon"><i class="fas fa-server"></i></div>
+                    <h3>Backend</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Go</span>
+                        <span class="skill-tag">GraphQL</span>
+                        <span class="skill-tag">REST</span>
+                    </div>
+                </div>
+                <div class="skill-card glass reveal">
+                    <div class="skill-icon"><i class="fas fa-database"></i></div>
+                    <h3>Database</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">Redis</span>
+                        <span class="skill-tag">Prisma</span>
+                    </div>
+                </div>
+                <div class="skill-card glass reveal">
+                    <div class="skill-icon"><i class="fas fa-cloud"></i></div>
+                    <h3>Cloud & DevOps</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">CI/CD</span>
+                        <span class="skill-tag">Terraform</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div id="touchArea">
-  <div id="joystickBase"></div>
-  <div id="joystickKnob"></div>
-</div>
+    <!-- GitHub Integration Section -->
+    <section class="github-section">
+        <div class="container">
+            <div class="github-card glass reveal">
+                <h3 style="font-size: 24px; margin-bottom: 8px;">
+                    <i class="fab fa-github" style="margin-right: 10px;"></i> Open Source & Contributions
+                </h3>
+                <p style="color: var(--text-secondary);">Code is my canvas. Here's a glimpse of my daily commit activity.</p>
+                
+                <div class="github-graph" id="githubGraph">
+                    <!-- Generated via JS -->
+                </div>
 
-<div id="overlay">
-  <h1 id="overlayTitle">SPACE IMPACT</h1>
-  <p id="overlayText">Arrow keys / WASD to move. Auto-fire enabled.<br>Touch: drag left side to move. Collect power-ups!<br>Adjust settings with ☰.</p>
-  <button id="overlayBtn">START</button>
-</div>
+                <div class="github-stats">
+                    <div class="github-stat">
+                        <div class="github-stat-value">1,240+</div>
+                        <div class="github-stat-label">Contributions this year</div>
+                    </div>
+                    <div class="github-stat">
+                        <div class="github-stat-value">45+</div>
+                        <div class="github-stat-label">Repositories</div>
+                    </div>
+                    <div class="github-stat">
+                        <div class="github-stat-value">12</div>
+                        <div class="github-stat-label">Current Streak (Days)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script>
-(() => {
-  'use strict';
+    <!-- Experience Section -->
+    <section class="section" id="experience">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">03. Experience</span>
+                <h2 class="section-title">Where I've Worked</h2>
+                <p class="section-subtitle">My professional journey and the impact I've made along the way.</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item reveal">
+                    <div class="timeline-date">2022 - Present</div>
+                    <h3 class="timeline-role">Senior Software Engineer</h3>
+                    <p class="timeline-company">TechNova Solutions • Remote</p>
+                    <ul class="timeline-desc">
+                        <li>Architected and led the migration of a monolithic application to a microservices architecture, reducing deployment times by 60%.</li>
+                        <li>Designed high-throughput APIs handling 10M+ requests daily using Node.js and Go.</li>
+                        <li>Mentored a team of 5 junior developers, establishing code review standards and CI/CD pipelines.</li>
+                    </ul>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-date">2019 - 2022</div>
+                    <h3 class="timeline-role">Full Stack Developer</h3>
+                    <p class="timeline-company">CloudSync Inc. • Hybrid</p>
+                    <ul class="timeline-desc">
+                        <li>Developed real-time data synchronization features for a SaaS platform serving 50k+ enterprise users.</li>
+                        <li>Optimized PostgreSQL queries and implemented Redis caching, improving page load speeds by 40%.</li>
+                        <li>Built a custom design system in React, ensuring UI consistency across 15+ internal products.</li>
+                    </ul>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-date">2017 - 2019</div>
+                    <h3 class="timeline-role">Software Engineer</h3>
+                    <p class="timeline-company">DataFlow Analytics • On-site</p>
+                    <ul class="timeline-desc">
+                        <li>Created interactive data visualization dashboards using D3.js and Vue.js for financial analytics.</li>
+                        <li>Automated data ingestion pipelines using Python and Apache Airflow, processing 5TB of data weekly.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  // ---------- Canvas & Context ----------
-  const canvas = document.getElementById('game');
-  const ctx = canvas.getContext('2d');
-  const mini = document.getElementById('minimap');
-  const mctx = mini.getContext('2d');
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">04. Portfolio</span>
+                <h2 class="section-title">Featured Projects</h2>
+                <p class="section-subtitle">A selection of projects that showcase my skills and passion for building.</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card glass reveal">
+                    <div class="project-image" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Nexus Cloud Platform</h3>
+                        <p class="project-desc">A scalable multi-tenant cloud management dashboard. Features real-time monitoring, automated scaling, and role-based access control.</p>
+                        <div class="project-tech">
+                            <span>React</span>
+                            <span>Go</span>
+                            <span>Kubernetes</span>
+                            <span>gRPC</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" title="Live Demo"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" title="Source Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
 
-  let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
-  function resize() {
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * DPR;
-    canvas.height = H * DPR;
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  }
-  window.addEventListener('resize', resize);
-  resize();
+                <div class="project-card glass reveal">
+                    <div class="project-image" style="background: linear-gradient(135deg, #9b51e0, #f093fb);">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Synapse AI Assistant</h3>
+                        <p class="project-desc">An intelligent conversational AI integrated with internal company wikis. Uses RAG architecture for highly accurate, context-aware responses.</p>
+                        <div class="project-tech">
+                            <span>Python</span>
+                            <span>LangChain</span>
+                            <span>Next.js</span>
+                            <span>Pinecone</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" title="Live Demo"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" title="Source Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
 
-  // ---------- Audio ----------
-  let audioCtx = null;
-  let soundEnabled = true;
-  function ensureAudio() {
-    if (!audioCtx) {
-      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-      catch (e) { audioCtx = null; }
-    }
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-  }
-  function beep(freq, dur, type='square', vol=0.05, slideTo=null) {
-    if (!soundEnabled || !audioCtx) return;
-    const t = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, t);
-    if (slideTo !== null) osc.frequency.exponentialRampToValueAtTime(Math.max(40, slideTo), t + dur);
-    gain.gain.setValueAtTime(vol, t);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    osc.connect(gain).connect(audioCtx.destination);
-    osc.start(t);
-    osc.stop(t + dur + 0.02);
-  }
-  function noiseBurst(dur=0.2, vol=0.1) {
-    if (!soundEnabled || !audioCtx) return;
-    const t = audioCtx.currentTime;
-    const bufferSize = Math.floor(audioCtx.sampleRate * dur);
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random()*2-1) * (1 - i/bufferSize);
-    const src = audioCtx.createBufferSource();
-    const gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(vol, t);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    src.buffer = buffer;
-    src.connect(gain).connect(audioCtx.destination);
-    src.start(t);
-  }
-  function powerupSound() {
-    if (!soundEnabled || !audioCtx) return;
-    beep(440, 0.1, 'sine', 0.06, 880);
-    setTimeout(() => beep(660, 0.1, 'sine', 0.06, 1320), 50);
-    setTimeout(() => beep(880, 0.15, 'sine', 0.06, 1760), 100);
-  }
+                <div class="project-card glass reveal">
+                    <div class="project-image" style="background: linear-gradient(135deg, #f093fb, #00f2fe);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">FinTrack Pro</h3>
+                        <p class="project-desc">A high-performance personal finance tracker with predictive analytics. Features bank syncing, budget forecasting, and secure data encryption.</p>
+                        <div class="project-tech">
+                            <span>TypeScript</span>
+                            <span>Node.js</span>
+                            <span>PostgreSQL</span>
+                            <span>Plaid API</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" title="Live Demo"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" title="Source Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  // ---------- Parameters ----------
-  const params = {
-    spawnRate: 1.2,
-    enemySpeed: 2.5,
-    bulletSpeed: 9,
-    fireRate: 8,
-    moveSpeed: 5,
-    bossHP: 250,
-    difficulty: 1.0,
-    maxEnemies: 25,
-    bossThreshold: 1500,
-    powerupRate: 0.15,
-  };
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">05. Contact</span>
+                <h2 class="section-title">Let's Build Something</h2>
+            </div>
+            <div class="contact-content reveal">
+                <p>
+                    I'm currently open to new opportunities and exciting projects. 
+                    Whether you have a question, a proposal, or just want to say hi, 
+                    my inbox is always open. Let's connect!
+                </p>
+                <a href="mailto:wenzel.aboboto@example.com" class="contact-email">
+                    wenzel.aboboto@example.com
+                </a>
+                <div class="social-links">
+                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Dev.to"><i class="fab fa-dev"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  // ---------- State ----------
-  const state = {
-    paused: false,
-    running: false,
-    gameOver: false,
-    showHitboxes: false,
-    particlesEnabled: true,
-    score: 0,
-    lives: 3,
-    wave: 1,
-    bossActive: false,
-    bossDefeated: 0,
-    shakeTime: 0,
-    shakeMag: 0,
-    time: 0,
-    spawnAccumulator: 0,
-    fireAccumulator: 0,
-    starfield: [],
-    combo: 0,
-    comboTimer: 0,
-    maxCombo: 0,
-    hitStop: 0,
-    screenFlash: 0,
-    slowMotion: 1,
-    announcements: [],
-  };
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Designed & Built by <a href="#">Wenzel Aboboto</a> &copy; 2024</p>
+        </div>
+    </footer>
 
-  // ---------- Entities ----------
-  const player = {
-    x: 0, y: 0, w: 34, h: 20, r: 14,
-    hp: 100, maxHp: 100,
-    invuln: 0,
-    trail: [],
-  };
-
-  const bullets = [];
-  const eBullets = [];
-  const enemies = [];
-  const particles = [];
-  const powerups = [];
-  const damageNumbers = [];
-  const playerPowerups = {
-    rapidFire: { active: false, duration: 0, maxDuration: 8 },
-    multiShot: { active: false, duration: 0, maxDuration: 10 },
-    shield: { active: false, duration: 0, maxDuration: 6 },
-    speedBoost: { active: false, duration: 0, maxDuration: 8 },
-    bigBullets: { active: false, duration: 0, maxDuration: 10 },
-    homing: { active: false, duration: 0, maxDuration: 12 },
-  };
-
-  // ---------- Input ----------
-  const keys = {};
-  const input = { dx: 0, dy: 0 };
-
-  window.addEventListener('keydown', e => {
-    keys[e.key.toLowerCase()] = true;
-    if (['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase())) e.preventDefault();
-    ensureAudio();
-  });
-  window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
-
-  // Touch joystick
-  const touchArea = document.getElementById('touchArea');
-  const jBase = document.getElementById('joystickBase');
-  const jKnob = document.getElementById('joystickKnob');
-  let touchId = null;
-  let jCenter = { x: 0, y: 0 };
-  const jRadius = 45;
-
-  function startJoystick(x, y) {
-    const rect = touchArea.getBoundingClientRect();
-    jCenter.x = x; jCenter.y = y;
-    jBase.style.display = 'block';
-    jKnob.style.display = 'block';
-    jBase.style.left = (x - 55) + 'px';
-    jBase.style.top = (y - 55) + 'px';
-  }
-  function moveJoystick(x, y) {
-    let dx = x - jCenter.x, dy = y - jCenter.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist > jRadius) { dx = dx / dist * jRadius; dy = dy / dist * jRadius; }
-    jKnob.style.left = (jCenter.x - 25 + dx) + 'px';
-    jKnob.style.top = (jCenter.y - 25 + dy) + 'px';
-    input.dx = dx / jRadius;
-    input.dy = dy / jRadius;
-  }
-  function endJoystick() {
-    touchId = null;
-    jBase.style.display = 'none';
-    jKnob.style.display = 'none';
-    input.dx = 0; input.dy = 0;
-  }
-
-  touchArea.addEventListener('touchstart', e => {
-    if (touchId !== null) return;
-    const t = e.changedTouches[0];
-    touchId = t.identifier;
-    startJoystick(t.clientX, t.clientY);
-    e.preventDefault();
-  }, { passive: false });
-  touchArea.addEventListener('touchmove', e => {
-    for (const t of e.changedTouches) {
-      if (t.identifier === touchId) { moveJoystick(t.clientX, t.clientY); break; }
-    }
-    e.preventDefault();
-  }, { passive: false });
-  touchArea.addEventListener('touchend', e => {
-    for (const t of e.changedTouches) {
-      if (t.identifier === touchId) { endJoystick(); break; }
-    }
-  });
-  touchArea.addEventListener('touchcancel', endJoystick);
-
-  // ---------- UI Bindings ----------
-  function bindSlider(id, key, fmt) {
-    const el = document.getElementById(id);
-    const vEl = document.getElementById(id + 'V');
-    el.value = params[key];
-    vEl.textContent = fmt ? fmt(params[key]) : params[key];
-    el.addEventListener('input', () => {
-      params[key] = parseFloat(el.value);
-      vEl.textContent = fmt ? fmt(params[key]) : params[key];
-    });
-  }
-  bindSlider('spawnRate', 'spawnRate', v => v.toFixed(1));
-  bindSlider('enemySpeed', 'enemySpeed', v => v.toFixed(1));
-  bindSlider('bulletSpeed', 'bulletSpeed', v => v.toFixed(1));
-  bindSlider('fireRate', 'fireRate', v => v.toFixed(1));
-  bindSlider('moveSpeed', 'moveSpeed', v => v.toFixed(1));
-  bindSlider('bossHP', 'bossHP', v => v.toFixed(0));
-  bindSlider('difficulty', 'difficulty', v => v.toFixed(1));
-  bindSlider('maxEnemies', 'maxEnemies', v => v.toFixed(0));
-  bindSlider('bossThreshold', 'bossThreshold', v => v.toFixed(0));
-  bindSlider('powerupRate', 'powerupRate', v => v.toFixed(2));
-
-  const pauseBtn = document.getElementById('pauseBtn');
-  pauseBtn.addEventListener('click', () => {
-    state.paused = !state.paused;
-    pauseBtn.textContent = state.paused ? 'Resume' : 'Pause';
-    pauseBtn.classList.toggle('active', state.paused);
-  });
-  document.getElementById('restartBtn').addEventListener('click', resetGame);
-  const hitboxBtn = document.getElementById('hitboxBtn');
-  hitboxBtn.addEventListener('click', () => {
-    state.showHitboxes = !state.showHitboxes;
-    hitboxBtn.classList.toggle('active', state.showHitboxes);
-  });
-  const particleBtn = document.getElementById('particleBtn');
-  particleBtn.addEventListener('click', () => {
-    state.particlesEnabled = !state.particlesEnabled;
-    particleBtn.classList.toggle('active', state.particlesEnabled);
-  });
-  const soundBtn = document.getElementById('soundBtn');
-  soundBtn.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    soundBtn.classList.toggle('active', soundEnabled);
-    ensureAudio();
-  });
-  const togglePanel = document.getElementById('togglePanel');
-  const controlsPanel = document.getElementById('controls');
-  togglePanel.addEventListener('click', () => {
-    controlsPanel.classList.toggle('hidden');
-  });
-
-  // ---------- Overlay ----------
-  const overlay = document.getElementById('overlay');
-  const overlayTitle = document.getElementById('overlayTitle');
-  const overlayText = document.getElementById('overlayText');
-  const overlayBtn = document.getElementById('overlayBtn');
-  overlayBtn.addEventListener('click', () => {
-    ensureAudio();
-    if (state.gameOver) resetGame();
-    overlay.classList.add('hidden');
-    state.running = true;
-    state.paused = false;
-  });
-
-  function showOverlay(title, text, btn='START') {
-    overlayTitle.textContent = title;
-    overlayText.innerHTML = text;
-    overlayBtn.textContent = btn;
-    overlay.classList.remove('hidden');
-  }
-
-  // ---------- Starfield ----------
-  function initStars() {
-    state.starfield = [];
-    const count = Math.floor((W * H) / 6000);
-    for (let i = 0; i < count; i++) {
-      state.starfield.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        s: Math.random() * 1.5 + 0.3,
-        v: Math.random() * 1.5 + 0.3,
-      });
-    }
-  }
-  initStars();
-  window.addEventListener('resize', initStars);
-
-  // ---------- Reset ----------
-  function resetGame() {
-    state.score = 0;
-    state.lives = 3;
-    state.wave = 1;
-    state.bossActive = false;
-    state.bossDefeated = 0;
-    state.gameOver = false;
-    state.shakeTime = 0;
-    state.time = 0;
-    state.spawnAccumulator = 0;
-    state.fireAccumulator = 0;
-    state.combo = 0;
-    state.comboTimer = 0;
-    state.maxCombo = 0;
-    state.hitStop = 0;
-    state.screenFlash = 0;
-    state.slowMotion = 1;
-    state.announcements = [];
-    player.x = 80;
-    player.y = H / 2;
-    player.hp = player.maxHp;
-    player.invuln = 0;
-    player.trail = [];
-    bullets.length = 0;
-    eBullets.length = 0;
-    enemies.length = 0;
-    particles.length = 0;
-    powerups.length = 0;
-    damageNumbers.length = 0;
-    for (const key in playerPowerups) {
-      playerPowerups[key].active = false;
-      playerPowerups[key].duration = 0;
-    }
-    initStars();
-    updatePowerupDisplay();
-  }
-
-  // ---------- Particles ----------
-  function spawnParticles(x, y, count, color, speed=3, life=0.6) {
-    if (!state.particlesEnabled) return;
-    for (let i = 0; i < count; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const s = Math.random() * speed + 0.5;
-      particles.push({
-        x, y,
-        vx: Math.cos(a) * s,
-        vy: Math.sin(a) * s,
-        life: life * (0.5 + Math.random() * 0.5),
-        maxLife: life,
-        color,
-        size: Math.random() * 2 + 1,
-      });
-    }
-  }
-
-  function shake(mag, dur) {
-    state.shakeMag = Math.max(state.shakeMag, mag);
-    state.shakeTime = Math.max(state.shakeTime, dur);
-  }
-
-  function flash(intensity) {
-    state.screenFlash = Math.max(state.screenFlash, intensity);
-  }
-
-  function addDamageNumber(x, y, damage, color='#ff0') {
-    damageNumbers.push({
-      x, y,
-      text: Math.floor(damage).toString(),
-      color,
-      life: 0.8,
-      vy: -2,
-    });
-  }
-
-  function announce(text, color='#6ef', duration=2) {
-    state.announcements.push({
-      text, color,
-      life: duration,
-      maxLife: duration,
-      y: H * 0.3,
-    });
-  }
-
-  // ---------- Enemy Types ----------
-  function spawnEnemy(type) {
-    const diff = params.difficulty;
-    const baseSpeed = params.enemySpeed;
-    const e = {
-      type,
-      x: W + 30,
-      y: 40 + Math.random() * (H - 80),
-      w: 24, h: 24, r: 12,
-      hp: 1, maxHp: 1,
-      vx: -baseSpeed, vy: 0,
-      t: 0,
-      phase: Math.random() * Math.PI * 2,
-      fireTimer: 1 + Math.random() * 2,
-      score: 10,
-      color: '#f66',
-      flashTime: 0,
-    };
-    if (type === 0) {
-      e.vx = -baseSpeed * 1.4 * diff;
-      e.hp = e.maxHp = 1;
-      e.color = '#ff6';
-      e.score = 10;
-      e.w = 22; e.h = 18; e.r = 10;
-    } else if (type === 1) {
-      e.vx = -baseSpeed * 0.9 * diff;
-      e.hp = e.maxHp = 2;
-      e.color = '#6cf';
-      e.score = 20;
-      e.w = 26; e.h = 22; e.r = 13;
-    } else if (type === 2) {
-      e.vx = -baseSpeed * 0.55 * diff;
-      e.hp = e.maxHp = 5;
-      e.color = '#f84';
-      e.score = 40;
-      e.w = 34; e.h = 28; e.r = 16;
-    } else if (type === 3) {
-      e.x = W + 80;
-      e.y = H / 2;
-      e.w = 90; e.h = 70; e.r = 40;
-      e.hp = e.maxHp = params.bossHP;
-      e.vx = -baseSpeed * 0.4;
-      e.color = '#f3a';
-      e.score = 500;
-      e.isBoss = true;
-      e.bossPhase = 0;
-      e.bossPhaseTimer = 0;
-    }
-    enemies.push(e);
-  }
-
-  // ---------- Powerups ----------
-  function spawnPowerup(x, y) {
-    const types = ['rapidFire', 'multiShot', 'shield', 'speedBoost', 'bigBullets', 'homing'];
-    const type = types[Math.floor(Math.random() * types.length)];
-    const colors = {
-      rapidFire: '#f66',
-      multiShot: '#6f6',
-      shield: '#66f',
-      speedBoost: '#ff6',
-      bigBullets: '#f6f',
-      homing: '#6ff',
-    };
-    const icons = {
-      rapidFire: '⚡',
-      multiShot: '✦',
-      shield: '🛡',
-      speedBoost: '»',
-      bigBullets: '●',
-      homing: '◎',
-    };
-    powerups.push({
-      x, y,
-      type,
-      color: colors[type],
-      icon: icons[type],
-      r: 10,
-      vx: -1,
-      vy: 0,
-      t: 0,
-      life: 10,
-    });
-  }
-
-  function collectPowerup(type) {
-    playerPowerups[type].active = true;
-    playerPowerups[type].duration = playerPowerups[type].maxDuration;
-    powerupSound();
-    flash(0.3);
-    announce(`${type.toUpperCase()}!`, playerPowerups[type].color || '#6ef', 1.5);
-    updatePowerupDisplay();
-  }
-
-  function updatePowerupDisplay() {
-    const display = document.getElementById('powerupDisplay');
-    display.innerHTML = '';
-    for (const key in playerPowerups) {
-      const p = playerPowerups[key];
-      if (p.active) {
-        const div = document.createElement('div');
-        div.className = 'powerup-icon';
-        const pct = (p.duration / p.maxDuration) * 100;
-        div.innerHTML = `<span>${key}</span><div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>`;
-        display.appendChild(div);
-      }
-    }
-  }
-
-  // ---------- Collision ----------
-  function circleHit(a, b) {
-    const dx = a.x - b.x, dy = a.y - b.y;
-    const rr = (a.r || 4) + (b.r || 4);
-    return dx*dx + dy*dy <= rr*rr;
-  }
-
-  // ---------- Update ----------
-  function update(dt) {
-    // Hit stop
-    if (state.hitStop > 0) {
-      state.hitStop -= dt;
-      return;
-    }
-
-    const adt = dt * state.slowMotion;
-    state.time += adt;
-
-    // Slow motion decay
-    if (state.slowMotion < 1) {
-      state.slowMotion = Math.min(1, state.slowMotion + dt * 0.5);
-    }
-
-    // Combo decay
-    if (state.comboTimer > 0) {
-      state.comboTimer -= adt;
-      if (state.comboTimer <= 0) {
-        state.combo = 0;
-      }
-    }
-
-    // Stars
-    for (const s of state.starfield) {
-      s.x -= s.v * 60 * adt;
-      if (s.x < 0) { s.x = W; s.y = Math.random() * H; }
-    }
-
-    // Player input
-    let dx = 0, dy = 0;
-    if (keys['arrowleft'] || keys['a']) dx -= 1;
-    if (keys['arrowright'] || keys['d']) dx += 1;
-    if (keys['arrowup'] || keys['w']) dy -= 1;
-    if (keys['arrowdown'] || keys['s']) dy += 1;
-    if (dx !== 0 || dy !== 0) {
-      const m = Math.hypot(dx, dy);
-      dx /= m; dy /= m;
-    }
-    if (touchId !== null) { dx = input.dx; dy = input.dy; }
-
-    let spd = params.moveSpeed * 60;
-    if (playerPowerups.speedBoost.active) spd *= 1.5;
-    player.x += dx * spd * adt;
-    player.y += dy * spd * adt;
-    player.x = Math.max(player.r, Math.min(W * 0.5, player.x));
-    player.y = Math.max(player.r, Math.min(H - player.r, player.y));
-
-    if (player.invuln > 0) player.invuln -= adt;
-
-    // Player trail
-    player.trail.push({ x: player.x - 12, y: player.y, life: 0.3 });
-    if (player.trail.length > 20) player.trail.shift();
-    for (let i = player.trail.length - 1; i >= 0; i--) {
-      player.trail[i].life -= adt;
-      if (player.trail[i].life <= 0) player.trail.splice(i, 1);
-    }
-
-    // Auto fire
-    state.fireAccumulator += adt;
-    let fireInterval = 1 / params.fireRate;
-    if (playerPowerups.rapidFire.active) fireInterval *= 0.5;
-    while (state.fireAccumulator >= fireInterval) {
-      state.fireAccumulator -= fireInterval;
-      const bSpeed = params.bulletSpeed * 60;
-      const bSize = playerPowerups.bigBullets.active ? 6 : 3;
-      
-      if (playerPowerups.multiShot.active) {
-        for (let angle = -0.2; angle <= 0.2; angle += 0.2) {
-          bullets.push({
-            x: player.x + 18, y: player.y,
-            vx: Math.cos(angle) * bSpeed,
-            vy: Math.sin(angle) * bSpeed,
-            r: bSize, life: 2,
-            homing: playerPowerups.homing.active,
-          });
-        }
-      } else {
-        bullets.push({
-          x: player.x + 18, y: player.y,
-          vx: bSpeed, vy: 0,
-          r: bSize, life: 2,
-          homing: playerPowerups.homing.active,
+    <!-- JavaScript -->
+    <script>
+        // =========================================
+        // NAVBAR SCROLL EFFECT
+        // =========================================
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
-      }
-      beep(880, 0.05, 'square', 0.03);
-    }
 
-    // Spawn enemies
-    if (!state.bossActive && enemies.length < params.maxEnemies) {
-      state.spawnAccumulator += adt;
-      const spawnInterval = 1 / (params.spawnRate * params.difficulty);
-      while (state.spawnAccumulator >= spawnInterval && enemies.length < params.maxEnemies) {
-        state.spawnAccumulator -= spawnInterval;
-        const r = Math.random();
-        let t;
-        if (r < 0.5) t = 0;
-        else if (r < 0.8) t = 1;
-        else t = 2;
-        spawnEnemy(t);
-      }
-    }
+        // =========================================
+        // MOBILE MENU TOGGLE
+        // =========================================
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
 
-    // Boss spawn
-    if (!state.bossActive && state.score >= params.bossThreshold * (1 + state.bossDefeated)) {
-      state.bossActive = true;
-      spawnEnemy(3);
-      shake(10, 0.6);
-      flash(0.5);
-      announce('BOSS INCOMING!', '#f3a', 2);
-      beep(120, 0.5, 'sawtooth', 0.08, 60);
-    }
+        mobileToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
 
-    // Update bullets
-    for (let i = bullets.length - 1; i >= 0; i--) {
-      const b = bullets[i];
-      
-      // Homing
-      if (b.homing && enemies.length > 0) {
-        let closest = null, minDist = Infinity;
-        for (const e of enemies) {
-          const d = Math.hypot(e.x - b.x, e.y - b.y);
-          if (d < minDist) { minDist = d; closest = e; }
-        }
-        if (closest && minDist < 300) {
-          const targetAngle = Math.atan2(closest.y - b.y, closest.x - b.x);
-          const currentAngle = Math.atan2(b.vy, b.vx);
-          let diff = targetAngle - currentAngle;
-          while (diff > Math.PI) diff -= Math.PI * 2;
-          while (diff < -Math.PI) diff += Math.PI * 2;
-          const turnRate = 3 * adt;
-          const newAngle = currentAngle + Math.sign(diff) * Math.min(Math.abs(diff), turnRate);
-          const speed = Math.hypot(b.vx, b.vy);
-          b.vx = Math.cos(newAngle) * speed;
-          b.vy = Math.sin(newAngle) * speed;
-        }
-      }
-      
-      b.x += b.vx * adt;
-      b.y += b.vy * adt;
-      b.life -= adt;
-      if (b.x > W + 20 || b.life <= 0) bullets.splice(i, 1);
-    }
-
-    // Update enemy bullets
-    for (let i = eBullets.length - 1; i >= 0; i--) {
-      const b = eBullets[i];
-      b.x += b.vx * adt;
-      b.y += b.vy * adt;
-      b.life -= adt;
-      if (b.x < -20 || b.x > W + 20 || b.y < -20 || b.y > H + 20 || b.life <= 0) {
-        eBullets.splice(i, 1);
-      }
-    }
-
-    // Update enemies
-    for (let i = enemies.length - 1; i >= 0; i--) {
-      const e = enemies[i];
-      e.t += adt;
-      if (e.flashTime > 0) e.flashTime -= adt;
-      
-      if (e.type === 0) {
-        // Scout: straight
-      } else if (e.type === 1) {
-        // Drone: sine
-        e.vy = Math.cos(e.t * 3 + e.phase) * 2.5;
-      } else if (e.type === 2) {
-        // Tank: zigzag
-        e.vy = Math.sign(Math.sin(e.t * 1.5 + e.phase)) * 1.8;
-      } else if (e.type === 3) {
-        // Boss
-        const targetX = W - 100;
-        if (e.x > targetX) e.vx = -params.enemySpeed * 30 * adt;
-        else {
-          e.vx = 0;
-          e.y += Math.sin(e.t * 1.2) * 60 * adt;
-          e.y = Math.max(60, Math.min(H - 60, e.y));
-        }
-        
-        // Boss phases
-        e.bossPhaseTimer += adt;
-        const hpPct = e.hp / e.maxHp;
-        if (hpPct < 0.3 && e.bossPhase < 2) {
-          e.bossPhase = 2;
-          announce('FINAL PHASE!', '#f00', 1.5);
-          shake(12, 0.5);
-          flash(0.6);
-        } else if (hpPct < 0.6 && e.bossPhase < 1) {
-          e.bossPhase = 1;
-          announce('PHASE 2!', '#f60', 1.5);
-          shake(8, 0.4);
-          flash(0.4);
-        }
-        
-        // Boss fires
-        e.fireTimer -= adt;
-        const fireRate = e.bossPhase === 2 ? 0.2 : e.bossPhase === 1 ? 0.4 : 0.8;
-        if (e.fireTimer <= 0) {
-          e.fireTimer = fireRate / params.difficulty;
-          const dxp = player.x - e.x, dyp = player.y - e.y;
-          const d = Math.hypot(dxp, dyp) || 1;
-          const sp = 4 * 60;
-          
-          if (e.bossPhase === 2) {
-            // Spiral pattern
-            for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
-              eBullets.push({
-                x: e.x, y: e.y,
-                vx: Math.cos(a + e.t * 2) * sp,
-                vy: Math.sin(a + e.t * 2) * sp,
-                r: 4, life: 4, color: '#f6a'
-              });
-            }
-          } else if (e.bossPhase === 1) {
-            // Triple spread
-            for (let offset = -0.3; offset <= 0.3; offset += 0.3) {
-              eBullets.push({
-                x: e.x - 40, y: e.y,
-                vx: dxp/d*sp + offset * 100,
-                vy: dyp/d*sp,
-                r: 5, life: 4, color: '#f6a'
-              });
-            }
-          } else {
-            // Aimed shot
-            eBullets.push({
-              x: e.x - 40, y: e.y,
-              vx: dxp/d*sp, vy: dyp/d*sp,
-              r: 5, life: 4, color: '#f6a'
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const icon = mobileToggle.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
             });
-          }
-          beep(220, 0.1, 'sawtooth', 0.04, 110);
-        }
-      }
+        });
 
-      e.x += e.vx * 60 * adt;
-      e.y += e.vy * 60 * adt;
-      e.y = Math.max(e.r, Math.min(H - e.r, e.y));
+        // =========================================
+        // SCROLL REVEAL ANIMATION
+        // =========================================
+        const revealElements = document.querySelectorAll('.reveal');
 
-      if (!e.isBoss && e.x < -40) {
-        enemies.splice(i, 1);
-        continue;
-      }
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
 
-      // Bullet vs enemy
-      for (let j = bullets.length - 1; j >= 0; j--) {
-        const b = bullets[j];
-        if (circleHit(b, e)) {
-          e.hp -= 1;
-          e.flashTime = 0.1;
-          bullets.splice(j, 1);
-          spawnParticles(b.x, b.y, 4, '#fff', 2, 0.3);
-          addDamageNumber(e.x, e.y - e.r, 1, '#ff0');
-          beep(600, 0.04, 'square', 0.02, 300);
-          
-          if (e.hp <= 0) {
-            const comboMult = 1 + state.combo * 0.1;
-            const scoreGain = Math.floor(e.score * comboMult);
-            state.score += scoreGain;
-            state.combo++;
-            state.comboTimer = 2;
-            state.maxCombo = Math.max(state.maxCombo, state.combo);
-            
-            addDamageNumber(e.x, e.y, scoreGain, '#6f6');
-            spawnParticles(e.x, e.y, e.isBoss ? 60 : 18, e.color, e.isBoss ? 6 : 3, e.isBoss ? 1.2 : 0.7);
-            noiseBurst(e.isBoss ? 0.6 : 0.25, e.isBoss ? 0.15 : 0.08);
-            shake(e.isBoss ? 16 : 4, e.isBoss ? 0.8 : 0.2);
-            flash(e.isBoss ? 0.8 : 0.2);
-            
-            if (e.isBoss) {
-              state.bossActive = false;
-              state.bossDefeated++;
-              state.wave++;
-              state.slowMotion = 0.3;
-              announce('BOSS DEFEATED!', '#6f6', 3);
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // =========================================
+        // GITHUB CONTRIBUTION GRAPH GENERATOR
+        // =========================================
+        const githubGraph = document.getElementById('githubGraph');
+        const weeks = 52;
+        const days = 7;
+
+        for (let i = 0; i < weeks; i++) {
+            for (let j = 0; j < days; j++) {
+                const day = document.createElement('div');
+                day.classList.add('github-day');
+                
+                // Randomize contribution levels for a realistic look
+                const rand = Math.random();
+                if (rand > 0.85) day.classList.add('level-4');
+                else if (rand > 0.7) day.classList.add('level-3');
+                else if (rand > 0.5) day.classList.add('level-2');
+                else if (rand > 0.3) day.classList.add('level-1');
+                
+                githubGraph.appendChild(day);
             }
-            
-            // Powerup drop
-            if (!e.isBoss && Math.random() < params.powerupRate) {
-              spawnPowerup(e.x, e.y);
-            }
-            
-            enemies.splice(i, 1);
-            break;
-          }
         }
-      }
-    }
 
-    // Update powerups
-    for (let i = powerups.length - 1; i >= 0; i--) {
-      const p = powerups[i];
-      p.t += adt;
-      p.x += p.vx * 60 * adt;
-      p.y += Math.sin(p.t * 3) * 0.5;
-      p.life -= adt;
-      
-      if (p.x < -20 || p.life <= 0) {
-        powerups.splice(i, 1);
-        continue;
-      }
-      
-      if (circleHit(p, player)) {
-        collectPowerup(p.type);
-        spawnParticles(p.x, p.y, 12, p.color, 3, 0.5);
-        powerups.splice(i, 1);
-      }
-    }
-
-    // Update player powerups
-    let powerupChanged = false;
-    for (const key in playerPowerups) {
-      const p = playerPowerups[key];
-      if (p.active) {
-        p.duration -= adt;
-        if (p.duration <= 0) {
-          p.active = false;
-          p.duration = 0;
-          powerupChanged = true;
-        }
-      }
-    }
-    if (powerupChanged) updatePowerupDisplay();
-
-    // Enemy bullets vs player
-    if (player.invuln <= 0) {
-      for (let i = eBullets.length - 1; i >= 0; i--) {
-        const b = eBullets[i];
-        if (circleHit(b, player)) {
-          eBullets.splice(i, 1);
-          if (playerPowerups.shield.active) {
-            spawnParticles(b.x, b.y, 8, '#66f', 2, 0.3);
-            beep(440, 0.1, 'sine', 0.03, 220);
-          } else {
-            damagePlayer(10);
-          }
-        }
-      }
-      // Enemy vs player
-      for (let i = enemies.length - 1; i >= 0; i--) {
-        const e = enemies[i];
-        if (circleHit(e, player)) {
-          if (playerPowerups.shield.active) {
-            spawnParticles(e.x, e.y, 10, '#66f', 3, 0.4);
-            if (!e.isBoss) {
-              enemies.splice(i, 1);
-            }
-            beep(440, 0.1, 'sine', 0.03, 220);
-          } else {
-            damagePlayer(e.isBoss ? 30 : 20);
-            if (!e.isBoss) {
-              spawnParticles(e.x, e.y, 14, e.color, 3, 0.6);
-              enemies.splice(i, 1);
-            }
-          }
-        }
-      }
-    }
-
-    // Particles
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.x += p.vx * 60 * adt;
-      p.y += p.vy * 60 * adt;
-      p.vx *= 0.96; p.vy *= 0.96;
-      p.life -= adt;
-      if (p.life <= 0) particles.splice(i, 1);
-    }
-
-    // Damage numbers
-    for (let i = damageNumbers.length - 1; i >= 0; i--) {
-      const d = damageNumbers[i];
-      d.y += d.vy * 60 * adt;
-      d.life -= adt;
-      if (d.life <= 0) damageNumbers.splice(i, 1);
-    }
-
-    // Announcements
-    for (let i = state.announcements.length - 1; i >= 0; i--) {
-      const a = state.announcements[i];
-      a.life -= adt;
-      if (a.life <= 0) state.announcements.splice(i, 1);
-    }
-
-    // Shake decay
-    if (state.shakeTime > 0) {
-      state.shakeTime -= adt;
-      if (state.shakeTime <= 0) state.shakeMag = 0;
-    }
-
-    // Screen flash decay
-    if (state.screenFlash > 0) {
-      state.screenFlash = Math.max(0, state.screenFlash - adt * 2);
-    }
-  }
-
-  function damagePlayer(amount) {
-    player.hp -= amount;
-    player.invuln = 1.0;
-    shake(8, 0.3);
-    flash(0.4);
-    spawnParticles(player.x, player.y, 16, '#6ef', 3, 0.5);
-    addDamageNumber(player.x, player.y, amount, '#f66');
-    noiseBurst(0.2, 0.1);
-    state.combo = 0;
-    state.comboTimer = 0;
-    
-    if (player.hp <= 0) {
-      state.lives--;
-      spawnParticles(player.x, player.y, 40, '#6ef', 5, 1);
-      noiseBurst(0.6, 0.15);
-      shake(12, 0.5);
-      flash(0.8);
-      if (state.lives <= 0) {
-        state.gameOver = true;
-        state.running = false;
-        showOverlay('GAME OVER', 
-          `Final Score: <b>${state.score}</b><br>Max Combo: <b>${state.maxCombo}x</b><br>Waves Cleared: <b>${state.wave - 1}</b>`, 
-          'RESTART');
-      } else {
-        player.hp = player.maxHp;
-        player.invuln = 2.0;
-        announce('RESPAWNED!', '#6ef', 1.5);
-      }
-    }
-  }
-
-  // ---------- Render ----------
-  function drawShip(x, y, invuln) {
-    ctx.save();
-    ctx.translate(x, y);
-    if (invuln > 0 && Math.floor(invuln * 20) % 2 === 0) ctx.globalAlpha = 0.4;
-    
-    // Shield effect
-    if (playerPowerups.shield.active) {
-      ctx.strokeStyle = `rgba(100,100,255,${0.3 + Math.sin(state.time * 5) * 0.2})`;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(0, 0, 20, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-    
-    // body
-    ctx.fillStyle = playerPowerups.speedBoost.active ? '#ff6' : '#6ef';
-    ctx.beginPath();
-    ctx.moveTo(18, 0);
-    ctx.lineTo(-12, -10);
-    ctx.lineTo(-6, 0);
-    ctx.lineTo(-12, 10);
-    ctx.closePath();
-    ctx.fill();
-    
-    // cockpit
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(-2, -3, 8, 6);
-    
-    // engine flame
-    ctx.fillStyle = '#f93';
-    const flick = 4 + Math.random() * 4;
-    ctx.beginPath();
-    ctx.moveTo(-12, -4);
-    ctx.lineTo(-12 - flick, 0);
-    ctx.lineTo(-12, 4);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawEnemy(e) {
-    ctx.save();
-    ctx.translate(e.x, e.y);
-    
-    // Flash on hit
-    if (e.flashTime > 0) {
-      ctx.fillStyle = '#fff';
-    } else {
-      ctx.fillStyle = e.color;
-    }
-    
-    if (e.type === 0) {
-      ctx.beginPath();
-      ctx.moveTo(-10, 0);
-      ctx.lineTo(10, -7);
-      ctx.lineTo(6, 0);
-      ctx.lineTo(10, 7);
-      ctx.closePath();
-      ctx.fill();
-    } else if (e.type === 1) {
-      ctx.beginPath();
-      for (let i = 0; i < 6; i++) {
-        const a = i * Math.PI / 3;
-        const x = Math.cos(a) * 12, y = Math.sin(a) * 10;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(-3, -3, 6, 6);
-    } else if (e.type === 2) {
-      ctx.fillRect(-16, -12, 32, 24);
-      ctx.fillStyle = '#331';
-      ctx.fillRect(-12, -8, 24, 16);
-      ctx.fillStyle = e.flashTime > 0 ? '#fff' : e.color;
-      ctx.fillRect(-20, -4, 6, 8);
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(8, -3, 6, 6);
-    } else if (e.type === 3) {
-      // Boss with phase colors
-      const phaseColors = ['#f3a', '#f60', '#f00'];
-      ctx.fillStyle = e.flashTime > 0 ? '#fff' : phaseColors[e.bossPhase];
-      ctx.beginPath();
-      ctx.moveTo(-45, 0);
-      ctx.lineTo(-20, -35);
-      ctx.lineTo(30, -25);
-      ctx.lineTo(45, 0);
-      ctx.lineTo(30, 25);
-      ctx.lineTo(-20, 35);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = '#201';
-      ctx.fillRect(-20, -15, 40, 30);
-      ctx.fillStyle = '#ff3';
-      ctx.fillRect(-10, -8, 8, 6);
-      ctx.fillRect(-10, 2, 8, 6);
-      ctx.fillStyle = phaseColors[e.bossPhase];
-      ctx.fillRect(20, -4, 12, 8);
-      
-      // HP bar
-      ctx.restore();
-      const hpw = 80;
-      const hpx = e.x - hpw/2, hpy = e.y - 50;
-      ctx.fillStyle = '#300';
-      ctx.fillRect(hpx, hpy, hpw, 6);
-      ctx.fillStyle = phaseColors[e.bossPhase];
-      ctx.fillRect(hpx, hpy, hpw * (e.hp / e.maxHp), 6);
-      ctx.strokeStyle = '#fff';
-      ctx.strokeRect(hpx, hpy, hpw, 6);
-      return;
-    }
-    ctx.restore();
-  }
-
-  function drawPowerup(p) {
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    
-    // Glow
-    const glow = 0.5 + Math.sin(p.t * 5) * 0.3;
-    ctx.fillStyle = p.color;
-    ctx.globalAlpha = glow;
-    ctx.beginPath();
-    ctx.arc(0, 0, p.r + 4, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Icon
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-    ctx.fill();
-    
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 12px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(p.icon, 0, 0);
-    
-    ctx.restore();
-  }
-
-  function render() {
-    let sx = 0, sy = 0;
-    if (state.shakeTime > 0) {
-      sx = (Math.random() - 0.5) * state.shakeMag;
-      sy = (Math.random() - 0.5) * state.shakeMag;
-    }
-
-    ctx.save();
-    ctx.translate(sx, sy);
-
-    // Background
-    ctx.fillStyle = '#000';
-    ctx.fillRect(-20, -20, W + 40, H + 40);
-
-    // Stars
-    for (const s of state.starfield) {
-      ctx.fillStyle = `rgba(200,220,255,${0.3 + s.s * 0.3})`;
-      ctx.fillRect(s.x, s.y, s.s, s.s);
-    }
-
-    // Player trail
-    for (const t of player.trail) {
-      const alpha = t.life / 0.3;
-      ctx.fillStyle = `rgba(100,230,255,${alpha * 0.3})`;
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Particles
-    for (const p of particles) {
-      const a = p.life / p.maxLife;
-      ctx.globalAlpha = Math.max(0, a);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
-    }
-    ctx.globalAlpha = 1;
-
-    // Powerups
-    for (const p of powerups) drawPowerup(p);
-
-    // Enemy bullets
-    for (const b of eBullets) {
-      ctx.fillStyle = b.color || '#f6a';
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r * 0.4, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Player bullets
-    for (const b of bullets) {
-      if (b.homing) {
-        ctx.fillStyle = '#6ff';
-      } else if (playerPowerups.bigBullets.active) {
-        ctx.fillStyle = '#f6f';
-      } else {
-        ctx.fillStyle = '#6ef';
-      }
-      ctx.fillRect(b.x - 6, b.y - 1.5, 12, 3);
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(b.x - 4, b.y - 0.5, 8, 1);
-    }
-
-    // Enemies
-    for (const e of enemies) drawEnemy(e);
-
-    // Player
-    if (!state.gameOver) drawShip(player.x, player.y, player.invuln);
-
-    // Damage numbers
-    for (const d of damageNumbers) {
-      const alpha = d.life / 0.8;
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = d.color;
-      ctx.font = 'bold 14px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(d.text, d.x, d.y);
-    }
-    ctx.globalAlpha = 1;
-
-    // Hitboxes
-    if (state.showHitboxes) {
-      ctx.strokeStyle = '#0f0';
-      ctx.lineWidth = 1;
-      if (!state.gameOver) {
-        ctx.beginPath();
-        ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      ctx.strokeStyle = '#f00';
-      for (const e of enemies) {
-        ctx.beginPath();
-        ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      ctx.strokeStyle = '#ff0';
-      for (const b of bullets) {
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      ctx.strokeStyle = '#f6a';
-      for (const b of eBullets) {
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-    }
-
-    ctx.restore();
-
-    // Screen flash
-    if (state.screenFlash > 0) {
-      ctx.fillStyle = `rgba(255,255,255,${state.screenFlash})`;
-      ctx.fillRect(0, 0, W, H);
-    }
-
-    // Announcements
-    for (const a of state.announcements) {
-      const alpha = Math.min(1, a.life / 0.5);
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = a.color;
-      ctx.font = 'bold 32px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(a.text, W / 2, a.y);
-    }
-    ctx.globalAlpha = 1;
-
-    // Boss HP bar at top
-    if (state.bossActive) {
-      const boss = enemies.find(e => e.isBoss);
-      if (boss) {
-        const barW = W * 0.6;
-        const barH = 12;
-        const barX = (W - barW) / 2;
-        const barY = 80;
-        ctx.fillStyle = '#300';
-        ctx.fillRect(barX, barY, barW, barH);
-        const phaseColors = ['#f3a', '#f60', '#f00'];
-        ctx.fillStyle = phaseColors[boss.bossPhase];
-        ctx.fillRect(barX, barY, barW * (boss.hp / boss.maxHp), barH);
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(barX, barY, barW, barH);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 14px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('BOSS', W / 2, barY - 5);
-      }
-    }
-
-    // Combo display
-    if (state.combo > 1) {
-      ctx.fillStyle = `rgba(255,255,100,${Math.min(1, state.comboTimer / 2)})`;
-      ctx.font = 'bold 24px monospace';
-      ctx.textAlign = 'right';
-      ctx.fillText(`${state.combo}x COMBO`, W - 20, H - 20);
-    }
-
-    renderMinimap();
-  }
-
-  function renderMinimap() {
-    const mw = mini.width, mh = mini.height;
-    mctx.clearRect(0, 0, mw, mh);
-    mctx.fillStyle = 'rgba(0,15,30,0.7)';
-    mctx.fillRect(0, 0, mw, mh);
-    const sx = mw / W, sy = mh / H;
-    mctx.fillStyle = '#6ef';
-    mctx.fillRect(player.x * sx - 1, player.y * sy - 1, 3, 3);
-    for (const e of enemies) {
-      mctx.fillStyle = e.isBoss ? '#f3a' : e.color;
-      const s = e.isBoss ? 4 : 2;
-      mctx.fillRect(e.x * sx - s/2, e.y * sy - s/2, s, s);
-    }
-    mctx.fillStyle = '#ff6';
-    for (const p of powerups) {
-      mctx.fillRect(p.x * sx - 1, p.y * sy - 1, 2, 2);
-    }
-    mctx.fillStyle = '#ff6';
-    for (const b of bullets) mctx.fillRect(b.x * sx, b.y * sy, 1, 1);
-    mctx.strokeStyle = '#2af';
-    mctx.strokeRect(0, 0, mw, mh);
-  }
-
-  // ---------- HUD ----------
-  const elScore = document.getElementById('score');
-  const elLives = document.getElementById('lives');
-  const elHp = document.getElementById('hp');
-  const elCombo = document.getElementById('combo');
-  const elFps = document.getElementById('fps');
-  const elEcount = document.getElementById('ecount');
-  const elBcount = document.getElementById('bcount');
-  const elWave = document.getElementById('wave');
-
-  let fpsAccum = 0, fpsFrames = 0, fpsCurrent = 0;
-  function updateHUD(dt) {
-    fpsAccum += dt; fpsFrames++;
-    if (fpsAccum >= 0.5) {
-      fpsCurrent = Math.round(fpsFrames / fpsAccum);
-      fpsAccum = 0; fpsFrames = 0;
-    }
-    elScore.textContent = state.score;
-    elLives.textContent = state.lives;
-    elHp.textContent = Math.max(0, Math.floor(player.hp));
-    elCombo.textContent = state.combo;
-    elFps.textContent = fpsCurrent;
-    elEcount.textContent = enemies.length;
-    elBcount.textContent = bullets.length + eBullets.length;
-    elWave.textContent = state.wave;
-  }
-
-  // ---------- Loop ----------
-  let lastTime = performance.now();
-  function loop(now) {
-    const dt = Math.min(0.05, (now - lastTime) / 1000);
-    lastTime = now;
-    if (state.running && !state.paused && !state.gameOver) {
-      update(dt);
-    }
-    render();
-    updateHUD(dt);
-    requestAnimationFrame(loop);
-  }
-
-  // ---------- Init ----------
-  resetGame();
-  state.running = false;
-  showOverlay('SPACE IMPACT - ENHANCED',
-    'Arrow keys / WASD to move. Auto-fire enabled.<br>Touch: drag the left side to steer.<br>Collect power-ups for special abilities!<br>Open ☰ to tune parameters.',
-    'START');
-  requestAnimationFrame(loop);
-
-})();
-</script>
+        // =========================================
+        // SMOOTH SCROLL FOR ANCHOR LINKS
+        // =========================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

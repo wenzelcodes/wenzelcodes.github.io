@@ -2,100 +2,323 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-<title>Space Impact Clone - Enhanced</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>Space Impact Clone - Enhanced Mobile</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; color: #cfe; font-family: monospace; }
-  #game { position: absolute; inset: 0; display: block; background: #000; touch-action: none; }
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    user-select: none; 
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  html, body { 
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden; 
+    background: #000; 
+    color: #cfe; 
+    font-family: monospace;
+    touch-action: none;
+    position: fixed;
+  }
+  #game { 
+    position: absolute; 
+    inset: 0; 
+    display: block; 
+    background: #000; 
+    touch-action: none;
+  }
   #hud {
-    position: absolute; top: 8px; left: 8px; right: 8px;
-    display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none;
-    font-size: 13px; text-shadow: 0 0 4px #000;
+    position: absolute; 
+    top: 8px; 
+    left: 8px; 
+    right: 8px;
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 6px; 
+    pointer-events: none;
+    font-size: 12px; 
+    text-shadow: 0 0 4px #000;
+    z-index: 10;
   }
   #hud .stat {
-    background: rgba(0,20,40,0.55); padding: 4px 8px; border: 1px solid #2af;
+    background: rgba(0,20,40,0.7); 
+    padding: 3px 6px; 
+    border: 1px solid #2af;
     border-radius: 4px;
   }
   #hud .stat b { color: #6ef; }
+  
   #controls {
-    position: absolute; top: 44px; right: 8px;
-    width: 280px; max-height: calc(100% - 60px); overflow-y: auto;
-    background: rgba(0,15,30,0.85); border: 1px solid #2af;
-    border-radius: 6px; padding: 10px; font-size: 12px;
+    position: absolute; 
+    top: 44px; 
+    right: 8px;
+    width: 260px; 
+    max-height: calc(100% - 60px); 
+    overflow-y: auto;
+    background: rgba(0,15,30,0.9); 
+    border: 1px solid #2af;
+    border-radius: 6px; 
+    padding: 10px; 
+    font-size: 11px;
     transition: transform 0.25s ease;
+    z-index: 20;
   }
   #controls.hidden { transform: translateX(calc(100% + 20px)); }
-  #controls h3 { font-size: 13px; margin-bottom: 6px; color: #6ef; border-bottom: 1px solid #2af; padding-bottom: 4px; }
-  .row { display: flex; align-items: center; justify-content: space-between; margin: 4px 0; gap: 6px; }
-  .row label { flex: 1; color: #9cf; }
-  .row input[type=range] { flex: 1.2; }
-  .row .val { width: 44px; text-align: right; color: #fff; font-variant-numeric: tabular-nums; }
-  .btns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  #controls h3 { 
+    font-size: 12px; 
+    margin-bottom: 6px; 
+    color: #6ef; 
+    border-bottom: 1px solid #2af; 
+    padding-bottom: 4px; 
+  }
+  .row { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin: 4px 0; 
+    gap: 6px; 
+  }
+  .row label { flex: 1; color: #9cf; font-size: 11px; }
+  .row input[type=range] { flex: 1.2; height: 20px; }
+  .row .val { 
+    width: 40px; 
+    text-align: right; 
+    color: #fff; 
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+  }
+  .btns { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 4px; 
+    margin-top: 6px; 
+  }
   .btns button {
-    flex: 1 1 45%; background: #0a2540; color: #cfe; border: 1px solid #2af;
-    padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px;
+    flex: 1 1 45%; 
+    background: #0a2540; 
+    color: #cfe; 
+    border: 1px solid #2af;
+    padding: 8px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-family: inherit; 
+    font-size: 11px;
+    min-height: 36px;
   }
   .btns button:hover { background: #134; }
   .btns button.active { background: #2af; color: #001; }
+  
   #togglePanel {
-    position: absolute; top: 44px; right: 8px;
-    background: #0a2540; color: #cfe; border: 1px solid #2af;
-    padding: 6px 10px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px; z-index: 2;
+    position: absolute; 
+    top: 44px; 
+    right: 8px;
+    background: #0a2540; 
+    color: #cfe; 
+    border: 1px solid #2af;
+    padding: 8px 12px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-family: inherit; 
+    font-size: 14px; 
+    z-index: 21;
+    min-width: 40px;
+    min-height: 36px;
   }
-  #touchArea {
-    position: absolute; bottom: 0; left: 0; width: 50%; height: 40%;
+  
+  #mobileControls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 15;
+  }
+  
+  .touch-btn {
+    position: absolute;
+    pointer-events: auto;
+    background: rgba(40,170,255,0.2);
+    border: 2px solid rgba(40,170,255,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: rgba(100,230,255,0.8);
+    transition: all 0.1s;
+    touch-action: none;
+  }
+  .touch-btn:active, .touch-btn.active {
+    background: rgba(40,170,255,0.5);
+    border-color: #6ef;
+    transform: scale(0.95);
+  }
+  
+  #fireBtn {
+    right: 20px;
+    bottom: 140px;
+    width: 80px;
+    height: 80px;
+  }
+  
+  #bombBtn {
+    right: 20px;
+    bottom: 40px;
+    width: 70px;
+    height: 70px;
+  }
+  
+  #pauseBtnMobile {
+    left: 20px;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+  }
+  
+  #moveArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    pointer-events: auto;
+    touch-action: none;
+  }
+  
+  #joystickBase {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(40,170,255,0.15);
+    border: 2px solid rgba(40,170,255,0.5);
+    display: none;
+    pointer-events: none;
+  }
+  
+  #joystickKnob {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(100,230,255,0.5);
+    border: 2px solid #6ef;
+    display: none;
+    pointer-events: none;
+  }
+  
+  #overlay {
+    position: absolute; 
+    inset: 0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column; 
+    background: rgba(0,0,0,0.85); 
+    z-index: 30; 
     pointer-events: auto;
   }
-  #joystickBase {
-    position: absolute; left: 30px; bottom: 30px;
-    width: 110px; height: 110px; border-radius: 50%;
-    background: rgba(40,170,255,0.15); border: 2px solid rgba(40,170,255,0.5);
-    display: none;
+  #overlay h1 { 
+    color: #6ef; 
+    font-size: 28px; 
+    margin-bottom: 12px; 
+    text-shadow: 0 0 10px #2af; 
   }
-  #joystickKnob {
-    position: absolute; left: 30px; top: 30px;
-    width: 50px; height: 50px; border-radius: 50%;
-    background: rgba(100,230,255,0.5); border: 2px solid #6ef;
-    display: none;
+  #overlay p { 
+    color: #cfe; 
+    margin-bottom: 14px; 
+    font-size: 13px; 
+    text-align: center; 
+    padding: 0 20px;
+    line-height: 1.6;
   }
-  #overlay {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    flex-direction: column; background: rgba(0,0,0,0.7); z-index: 5; pointer-events: auto;
-  }
-  #overlay h1 { color: #6ef; font-size: 32px; margin-bottom: 12px; text-shadow: 0 0 10px #2af; }
-  #overlay p { color: #cfe; margin-bottom: 14px; font-size: 14px; text-align: center; padding: 0 20px; }
   #overlay button {
-    background: #0a2540; color: #cfe; border: 2px solid #2af; padding: 10px 24px;
-    border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 16px;
+    background: #0a2540; 
+    color: #cfe; 
+    border: 2px solid #2af; 
+    padding: 12px 28px;
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-family: inherit; 
+    font-size: 16px;
+    min-height: 48px;
   }
   #overlay button:hover { background: #2af; color: #001; }
   #overlay.hidden { display: none; }
+  
   #minimap {
-    position: absolute; bottom: 8px; right: 8px;
-    width: 140px; height: 80px;
-    background: rgba(0,15,30,0.7); border: 1px solid #2af; border-radius: 4px;
+    position: absolute; 
+    bottom: 8px; 
+    right: 8px;
+    width: 120px; 
+    height: 70px;
+    background: rgba(0,15,30,0.7); 
+    border: 1px solid #2af; 
+    border-radius: 4px;
+    z-index: 10;
   }
+  
   #powerupDisplay {
-    position: absolute; bottom: 100px; left: 8px;
-    display: flex; flex-direction: column; gap: 4px;
+    position: absolute; 
+    bottom: 100px; 
+    left: 8px;
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px;
     pointer-events: none;
+    z-index: 10;
   }
   .powerup-icon {
-    background: rgba(0,20,40,0.8); border: 1px solid #6ef;
-    padding: 4px 8px; border-radius: 4px; font-size: 11px;
-    display: flex; align-items: center; gap: 6px;
+    background: rgba(0,20,40,0.8); 
+    border: 1px solid #6ef;
+    padding: 4px 8px; 
+    border-radius: 4px; 
+    font-size: 10px;
+    display: flex; 
+    align-items: center; 
+    gap: 6px;
   }
   .powerup-icon .bar {
-    width: 60px; height: 4px; background: #333; border-radius: 2px; overflow: hidden;
+    width: 50px; 
+    height: 4px; 
+    background: #333; 
+    border-radius: 2px; 
+    overflow: hidden;
   }
   .powerup-icon .bar-fill {
-    height: 100%; background: #6ef; transition: width 0.1s;
+    height: 100%; 
+    background: #6ef; 
+    transition: width 0.1s;
   }
+  
+  .bomb-cooldown {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #fff;
+    pointer-events: none;
+  }
+  
   @media (max-width: 700px) {
-    #controls { width: 240px; font-size: 11px; }
-    #minimap { width: 110px; height: 60px; }
-    #hud .stat { font-size: 11px; padding: 3px 6px; }
+    #controls { width: 220px; font-size: 10px; }
+    #minimap { width: 100px; height: 60px; }
+    #hud .stat { font-size: 10px; padding: 2px 5px; }
+    #fireBtn { width: 70px; height: 70px; font-size: 20px; }
+    #bombBtn { width: 60px; height: 60px; font-size: 18px; }
+  }
+  
+  @media (hover: none) and (pointer: coarse) {
+    #togglePanel { display: block; }
   }
 </style>
 </head>
@@ -136,18 +359,31 @@
   </div>
 </div>
 
-<canvas id="minimap" width="140" height="80"></canvas>
+<canvas id="minimap" width="120" height="70"></canvas>
 
 <div id="powerupDisplay"></div>
 
-<div id="touchArea">
-  <div id="joystickBase"></div>
-  <div id="joystickKnob"></div>
+<div id="mobileControls">
+  <div id="moveArea">
+    <div id="joystickBase"></div>
+    <div id="joystickKnob"></div>
+  </div>
+  
+  <div id="fireBtn" class="touch-btn">🔥</div>
+  <div id="bombBtn" class="touch-btn">💣</div>
+  <div id="pauseBtnMobile" class="touch-btn">⏸</div>
 </div>
 
 <div id="overlay">
   <h1 id="overlayTitle">SPACE IMPACT</h1>
-  <p id="overlayText">Arrow keys / WASD to move. Auto-fire enabled.<br>Touch: drag left side to move. Collect power-ups!<br>Adjust settings with ☰.</p>
+  <p id="overlayText">
+    <b>Desktop:</b> Arrow keys / WASD to move<br>
+    <b>Mobile:</b> Left side = move joystick<br>
+    🔥 Fire button (manual override)<br>
+    💣 Bomb (clears screen, cooldown)<br>
+    Auto-fire enabled by default<br>
+    Collect power-ups for abilities!
+  </p>
   <button id="overlayBtn">START</button>
 </div>
 
@@ -219,6 +455,18 @@
     setTimeout(() => beep(660, 0.1, 'sine', 0.06, 1320), 50);
     setTimeout(() => beep(880, 0.15, 'sine', 0.06, 1760), 100);
   }
+  function bombSound() {
+    if (!soundEnabled || !audioCtx) return;
+    noiseBurst(0.8, 0.2);
+    beep(100, 0.5, 'sawtooth', 0.1, 50);
+  }
+
+  // Haptic feedback
+  function haptic(duration = 50) {
+    if (navigator.vibrate) {
+      navigator.vibrate(duration);
+    }
+  }
 
   // ---------- Parameters ----------
   const params = {
@@ -259,6 +507,9 @@
     screenFlash: 0,
     slowMotion: 1,
     announcements: [],
+    bombCooldown: 0,
+    bombMaxCooldown: 10,
+    manualFire: false,
   };
 
   // ---------- Entities ----------
@@ -296,20 +547,20 @@
   window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
   // Touch joystick
-  const touchArea = document.getElementById('touchArea');
+  const moveArea = document.getElementById('moveArea');
   const jBase = document.getElementById('joystickBase');
   const jKnob = document.getElementById('joystickKnob');
   let touchId = null;
   let jCenter = { x: 0, y: 0 };
-  const jRadius = 45;
+  const jRadius = 50;
 
   function startJoystick(x, y) {
-    const rect = touchArea.getBoundingClientRect();
     jCenter.x = x; jCenter.y = y;
     jBase.style.display = 'block';
     jKnob.style.display = 'block';
-    jBase.style.left = (x - 55) + 'px';
-    jBase.style.top = (y - 55) + 'px';
+    jBase.style.left = (x - 60) + 'px';
+    jBase.style.top = (y - 60) + 'px';
+    haptic(20);
   }
   function moveJoystick(x, y) {
     let dx = x - jCenter.x, dy = y - jCenter.y;
@@ -327,25 +578,109 @@
     input.dx = 0; input.dy = 0;
   }
 
-  touchArea.addEventListener('touchstart', e => {
+  moveArea.addEventListener('touchstart', e => {
     if (touchId !== null) return;
     const t = e.changedTouches[0];
     touchId = t.identifier;
     startJoystick(t.clientX, t.clientY);
     e.preventDefault();
   }, { passive: false });
-  touchArea.addEventListener('touchmove', e => {
+  moveArea.addEventListener('touchmove', e => {
     for (const t of e.changedTouches) {
       if (t.identifier === touchId) { moveJoystick(t.clientX, t.clientY); break; }
     }
     e.preventDefault();
   }, { passive: false });
-  touchArea.addEventListener('touchend', e => {
+  moveArea.addEventListener('touchend', e => {
     for (const t of e.changedTouches) {
       if (t.identifier === touchId) { endJoystick(); break; }
     }
   });
-  touchArea.addEventListener('touchcancel', endJoystick);
+  moveArea.addEventListener('touchcancel', endJoystick);
+
+  // Fire button
+  const fireBtn = document.getElementById('fireBtn');
+  let fireBtnActive = false;
+  fireBtn.addEventListener('touchstart', e => {
+    fireBtnActive = true;
+    state.manualFire = true;
+    fireBtn.classList.add('active');
+    haptic(10);
+    e.preventDefault();
+  }, { passive: false });
+  fireBtn.addEventListener('touchend', e => {
+    fireBtnActive = false;
+    state.manualFire = false;
+    fireBtn.classList.remove('active');
+    e.preventDefault();
+  });
+  fireBtn.addEventListener('touchcancel', e => {
+    fireBtnActive = false;
+    state.manualFire = false;
+    fireBtn.classList.remove('active');
+  });
+
+  // Bomb button
+  const bombBtn = document.getElementById('bombBtn');
+  bombBtn.addEventListener('touchstart', e => {
+    if (state.bombCooldown <= 0 && state.running && !state.paused && !state.gameOver) {
+      useBomb();
+      haptic(100);
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  // Pause button (mobile)
+  const pauseBtnMobile = document.getElementById('pauseBtnMobile');
+  pauseBtnMobile.addEventListener('touchstart', e => {
+    state.paused = !state.paused;
+    pauseBtnMobile.textContent = state.paused ? '▶' : '⏸';
+    pauseBtnMobile.classList.toggle('active', state.paused);
+    haptic(30);
+    e.preventDefault();
+  }, { passive: false });
+
+  function useBomb() {
+    state.bombCooldown = state.bombMaxCooldown;
+    bombSound();
+    shake(20, 0.8);
+    flash(1.0);
+    
+    // Clear all enemy bullets
+    eBullets.length = 0;
+    
+    // Damage all enemies
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      const e = enemies[i];
+      if (!e.isBoss) {
+        e.hp -= 10;
+        if (e.hp <= 0) {
+          state.score += e.score;
+          spawnParticles(e.x, e.y, 18, e.color, 3, 0.7);
+          enemies.splice(i, 1);
+        }
+      } else {
+        e.hp -= 20;
+        e.flashTime = 0.3;
+      }
+    }
+    
+    spawnParticles(player.x, player.y, 50, '#fff', 8, 1.0);
+    announce('BOMB!', '#ff6', 1.5);
+    updateBombCooldownDisplay();
+  }
+
+  function updateBombCooldownDisplay() {
+    const existing = bombBtn.querySelector('.bomb-cooldown');
+    if (existing) existing.remove();
+    
+    if (state.bombCooldown > 0) {
+      const div = document.createElement('div');
+      div.className = 'bomb-cooldown';
+      div.textContent = Math.ceil(state.bombCooldown);
+      bombBtn.appendChild(div);
+    }
+  }
 
   // ---------- UI Bindings ----------
   function bindSlider(id, key, fmt) {
@@ -374,6 +709,8 @@
     state.paused = !state.paused;
     pauseBtn.textContent = state.paused ? 'Resume' : 'Pause';
     pauseBtn.classList.toggle('active', state.paused);
+    pauseBtnMobile.textContent = state.paused ? '▶' : '⏸';
+    pauseBtnMobile.classList.toggle('active', state.paused);
   });
   document.getElementById('restartBtn').addEventListener('click', resetGame);
   const hitboxBtn = document.getElementById('hitboxBtn');
@@ -409,6 +746,7 @@
     overlay.classList.add('hidden');
     state.running = true;
     state.paused = false;
+    haptic(50);
   });
 
   function showOverlay(title, text, btn='START') {
@@ -453,6 +791,8 @@
     state.screenFlash = 0;
     state.slowMotion = 1;
     state.announcements = [];
+    state.bombCooldown = 0;
+    state.manualFire = false;
     player.x = 80;
     player.y = H / 2;
     player.hp = player.maxHp;
@@ -470,6 +810,7 @@
     }
     initStars();
     updatePowerupDisplay();
+    updateBombCooldownDisplay();
   }
 
   // ---------- Particles ----------
@@ -607,6 +948,7 @@
     playerPowerups[type].duration = playerPowerups[type].maxDuration;
     powerupSound();
     flash(0.3);
+    haptic(50);
     announce(`${type.toUpperCase()}!`, playerPowerups[type].color || '#6ef', 1.5);
     updatePowerupDisplay();
   }
@@ -657,6 +999,20 @@
       }
     }
 
+    // Bomb cooldown
+    if (state.bombCooldown > 0) {
+      state.bombCooldown -= adt;
+      if (state.bombCooldown <= 0) {
+        state.bombCooldown = 0;
+        updateBombCooldownDisplay();
+      } else {
+        const existing = bombBtn.querySelector('.bomb-cooldown');
+        if (existing) {
+          existing.textContent = Math.ceil(state.bombCooldown);
+        }
+      }
+    }
+
     // Stars
     for (const s of state.starfield) {
       s.x -= s.v * 60 * adt;
@@ -692,11 +1048,14 @@
       if (player.trail[i].life <= 0) player.trail.splice(i, 1);
     }
 
-    // Auto fire
+    // Auto fire (or manual fire override)
     state.fireAccumulator += adt;
     let fireInterval = 1 / params.fireRate;
     if (playerPowerups.rapidFire.active) fireInterval *= 0.5;
-    while (state.fireAccumulator >= fireInterval) {
+    
+    const shouldFire = state.manualFire || true; // Always auto-fire, manual just ensures it fires
+    
+    while (state.fireAccumulator >= fireInterval && shouldFire) {
       state.fireAccumulator -= fireInterval;
       const bSpeed = params.bulletSpeed * 60;
       const bSize = playerPowerups.bigBullets.active ? 6 : 3;
@@ -743,6 +1102,7 @@
       spawnEnemy(3);
       shake(10, 0.6);
       flash(0.5);
+      haptic(100);
       announce('BOSS INCOMING!', '#f3a', 2);
       beep(120, 0.5, 'sawtooth', 0.08, 60);
     }
@@ -821,11 +1181,13 @@
           announce('FINAL PHASE!', '#f00', 1.5);
           shake(12, 0.5);
           flash(0.6);
+          haptic(150);
         } else if (hpPct < 0.6 && e.bossPhase < 1) {
           e.bossPhase = 1;
           announce('PHASE 2!', '#f60', 1.5);
           shake(8, 0.4);
           flash(0.4);
+          haptic(100);
         }
         
         // Boss fires
@@ -902,6 +1264,7 @@
             noiseBurst(e.isBoss ? 0.6 : 0.25, e.isBoss ? 0.15 : 0.08);
             shake(e.isBoss ? 16 : 4, e.isBoss ? 0.8 : 0.2);
             flash(e.isBoss ? 0.8 : 0.2);
+            haptic(e.isBoss ? 200 : 50);
             
             if (e.isBoss) {
               state.bossActive = false;
@@ -1035,6 +1398,7 @@
     player.invuln = 1.0;
     shake(8, 0.3);
     flash(0.4);
+    haptic(80);
     spawnParticles(player.x, player.y, 16, '#6ef', 3, 0.5);
     addDamageNumber(player.x, player.y, amount, '#f66');
     noiseBurst(0.2, 0.1);
@@ -1047,6 +1411,7 @@
       noiseBurst(0.6, 0.15);
       shake(12, 0.5);
       flash(0.8);
+      haptic(200);
       if (state.lives <= 0) {
         state.gameOver = true;
         state.running = false;
@@ -1436,8 +1801,13 @@
   // ---------- Init ----------
   resetGame();
   state.running = false;
-  showOverlay('SPACE IMPACT - ENHANCED',
-    'Arrow keys / WASD to move. Auto-fire enabled.<br>Touch: drag the left side to steer.<br>Collect power-ups for special abilities!<br>Open ☰ to tune parameters.',
+  showOverlay('SPACE IMPACT - MOBILE',
+    '<b>Desktop:</b> Arrow keys / WASD to move<br>' +
+    '<b>Mobile:</b> Left side = move joystick<br>' +
+    '🔥 Fire button (manual override)<br>' +
+    '💣 Bomb (clears screen, cooldown)<br>' +
+    'Auto-fire enabled by default<br>' +
+    'Collect power-ups for abilities!',
     'START');
   requestAnimationFrame(loop);
 

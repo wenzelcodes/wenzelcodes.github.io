@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
-<title>Super Mario JS - Responsive Mobile & Desktop One-Pager</title>
+<title>Hulk vs Thanos - Boss Battle Edition</title>
 <style>
   * { 
     box-sizing: border-box; 
@@ -20,7 +20,7 @@
     width: 100%; 
     height: 100%; 
     overflow: hidden; 
-    background: #5c94fc; 
+    background: #1a1a24; 
     color: #fff; 
     font-family: monospace;
     touch-action: none;
@@ -30,7 +30,7 @@
     position: absolute; 
     inset: 0; 
     display: block; 
-    background: #5c94fc; 
+    background: #1a1a24; 
     touch-action: none;
   }
   #hud {
@@ -47,13 +47,13 @@
     z-index: 10;
   }
   #hud .stat {
-    background: rgba(0, 0, 0, 0.6); 
+    background: rgba(0, 0, 0, 0.7); 
     padding: 4px 8px; 
-    border: 1px solid #fc9838;
+    border: 1px solid #2e8b57;
     border-radius: 4px;
-    box-shadow: 0 0 6px rgba(252, 152, 56, 0.3);
+    box-shadow: 0 0 6px rgba(46, 139, 87, 0.4);
   }
-  #hud .stat b { color: #fc9838; }
+  #hud .stat b { color: #55efc4; }
   
   #controls {
     position: absolute; 
@@ -62,8 +62,8 @@
     width: 260px; 
     max-height: calc(100% - 60px); 
     overflow-y: auto;
-    background: rgba(15, 20, 35, 0.92); 
-    border: 1px solid #fc9838;
+    background: rgba(15, 20, 30, 0.92); 
+    border: 1px solid #2e8b57;
     border-radius: 6px; 
     padding: 10px; 
     font-size: 11px;
@@ -75,8 +75,8 @@
   #controls h3 { 
     font-size: 12px; 
     margin-bottom: 6px; 
-    color: #fc9838; 
-    border-bottom: 1px solid #fc9838; 
+    color: #55efc4; 
+    border-bottom: 1px solid #2e8b57; 
     padding-bottom: 4px; 
   }
   .row { 
@@ -86,7 +86,7 @@
     margin: 4px 0; 
     gap: 6px; 
   }
-  .row label { flex: 1; color: #fcc; font-size: 11px; }
+  .row label { flex: 1; color: #a3e4d7; font-size: 11px; }
   .row input[type=range] { flex: 1.2; height: 20px; cursor: pointer; }
   .row .val { 
     width: 40px; 
@@ -103,9 +103,9 @@
   }
   .btns button {
     flex: 1 1 45%; 
-    background: #334; 
+    background: #143826; 
     color: #cfe; 
-    border: 1px solid #fc9838;
+    border: 1px solid #2e8b57;
     padding: 8px; 
     border-radius: 4px; 
     cursor: pointer; 
@@ -113,16 +113,16 @@
     font-size: 11px;
     min-height: 36px;
   }
-  .btns button:hover { background: #445; }
-  .btns button.active { background: #fc9838; color: #001; font-weight: bold; }
+  .btns button:hover { background: #1e5638; }
+  .btns button.active { background: #2e8b57; color: #fff; font-weight: bold; }
   
   #togglePanel {
     position: absolute; 
     top: 44px; 
     right: 8px;
-    background: #334; 
+    background: #143826; 
     color: #cfe; 
-    border: 1px solid #fc9838;
+    border: 1px solid #2e8b57;
     padding: 8px 12px; 
     border-radius: 4px; 
     cursor: pointer; 
@@ -143,20 +143,20 @@
   .touch-btn {
     position: absolute;
     pointer-events: auto;
-    background: rgba(252,152,56,0.25);
-    border: 2px solid rgba(252,152,56,0.6);
+    background: rgba(46,139,87,0.25);
+    border: 2px solid rgba(46,139,87,0.6);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    color: rgba(255,230,200,0.95);
+    color: rgba(200,255,220,0.95);
     transition: all 0.1s;
     touch-action: none;
     font-weight: bold;
   }
   .touch-btn:active, .touch-btn.active {
-    background: rgba(252,152,56,0.6);
+    background: rgba(46,139,87,0.6);
     border-color: #fff;
     transform: scale(0.92);
   }
@@ -180,8 +180,8 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: rgba(252,152,56,0.15);
-    border: 2px solid rgba(252,152,56,0.5);
+    background: rgba(46,139,87,0.15);
+    border: 2px solid rgba(46,139,87,0.5);
     display: none;
     pointer-events: none;
   }
@@ -191,8 +191,8 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(255,200,100,0.5);
-    border: 2px solid #fc9838;
+    background: rgba(85,239,196,0.5);
+    border: 2px solid #2e8b57;
     display: none;
     pointer-events: none;
   }
@@ -209,14 +209,14 @@
     pointer-events: auto;
   }
   #overlay h1 { 
-    color: #fc9838; 
+    color: #55efc4; 
     font-size: 32px; 
     margin-bottom: 12px; 
-    text-shadow: 0 0 12px #e83800; 
+    text-shadow: 0 0 12px #2e8b57; 
     letter-spacing: 2px;
   }
   #overlay p { 
-    color: #fcc; 
+    color: #a3e4d7; 
     margin-bottom: 16px; 
     font-size: 13px; 
     text-align: center; 
@@ -224,18 +224,18 @@
     line-height: 1.6;
   }
   #overlay button {
-    background: #e83800; 
+    background: #143826; 
     color: #fff; 
-    border: 2px solid #fc9838; 
+    border: 2px solid #2e8b57; 
     padding: 12px 28px;
     border-radius: 6px; 
     cursor: pointer; 
     font-family: inherit; 
     font-size: 16px;
     min-height: 48px;
-    box-shadow: 0 0 10px rgba(232,56,0,0.5);
+    box-shadow: 0 0 10px rgba(46,139,87,0.5);
   }
-  #overlay button:hover { background: #fc9838; color: #001; }
+  #overlay button:hover { background: #2e8b57; color: #000; }
   #overlay.hidden { display: none; }
   
   @media (max-width: 700px) {
@@ -255,9 +255,9 @@
 
 <div id="hud">
   <div class="stat">Score: <b id="score">0</b></div>
-  <div class="stat">Coins: <b id="coins">0</b></div>
-  <div class="stat">World: <b id="world">1-1</b></div>
-  <div class="stat">Lives: <b id="lives">3</b></div>
+  <div class="stat">Cores: <b id="coins">0</b></div>
+  <div class="stat">Power: <b id="powerStatus">None</b></div>
+  <div class="stat">Health: <b id="lives">3</b></div>
   <div class="stat">FPS: <b id="fps">0</b></div>
 </div>
 
@@ -266,9 +266,8 @@
 <div id="controls">
   <h3>Parameters</h3>
   <div class="row"><label>Gravity</label><input type="range" id="gravity" min="0.3" max="1.2" step="0.05" value="0.6"><span class="val" id="gravityV">0.60</span></div>
-  <div class="row"><label>Jump Force</label><input type="range" id="jumpForce" min="8" max="18" step="0.5" value="13"><span class="val" id="jumpForceV">13.0</span></div>
-  <div class="row"><label>Move Speed</label><input type="range" id="moveSpeed" min="2" max="8" step="0.5" value="4.5"><span class="val" id="moveSpeedV">4.5</span></div>
-  <div class="row"><label>Enemy Speed</label><input type="range" id="enemySpeed" min="0.5" max="3" step="0.25" value="1.25"><span class="val" id="enemySpeedV">1.25</span></div>
+  <div class="row"><label>Leap Force</label><input type="range" id="jumpForce" min="8" max="18" step="0.5" value="13.5"><span class="val" id="jumpForceV">13.5</span></div>
+  <div class="row"><label>Smash Speed</label><input type="range" id="moveSpeed" min="2" max="8" step="0.5" value="4.8"><span class="val" id="moveSpeedV">4.8</span></div>
   <div class="btns">
     <button id="pauseBtn">Pause</button>
     <button id="restartBtn">Restart</button>
@@ -284,27 +283,26 @@
   </div>
   
   <div id="jumpBtn" class="touch-btn">⬆</div>
-  <div id="dashBtn" class="touch-btn">RUN</div>
+  <div id="dashBtn" class="touch-btn">RAGE</div>
   <div id="pauseBtnMobile" class="touch-btn">⏸</div>
 </div>
 
 <div id="overlay">
-  <h1 id="overlayTitle">SUPER MARIO JS</h1>
+  <h1 id="overlayTitle">HULK VS THANOS</h1>
   <p id="overlayText">
-    <b>Desktop:</b> Arrow keys / WASD to Move & Jump<br>
-    Space / W = Jump | Shift = Run / Dash<br>
+    <b>Desktop:</b> Arrow keys / WASD to Move & Leap<br>
+    Space / W = Leap | Shift = Smash Dash<br>
     <b>Mobile:</b> Left side = Swipe/Joystick to Move<br>
-    ⬆ Jump button | RUN = Dash speed<br>
-    Stomp Goombas, collect coins & reach the flag!
+    ⬆ Leap button | RAGE = Super Dash<br>
+    Defeat creeps, collect Avenger power-ups, and smash Thanos at the end!
   </p>
-  <button id="overlayBtn">START GAME</button>
+  <button id="overlayBtn">FIGHT THANOS</button>
 </div>
 
 <script>
 (() => {
   'use strict';
 
-  // ---------- Canvas Setup ----------
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
 
@@ -321,7 +319,6 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // ---------- Audio Synthesizer ----------
   let audioCtx = null;
   let soundEnabled = true;
   function ensureAudio() {
@@ -350,12 +347,10 @@
     if (navigator.vibrate) navigator.vibrate(duration);
   }
 
-  // ---------- Game Parameters & State ----------
   const params = {
     gravity: 0.6,
-    jumpForce: 13,
-    moveSpeed: 4.5,
-    enemySpeed: 1.25
+    jumpForce: 13.5,
+    moveSpeed: 4.8
   };
 
   const state = {
@@ -372,85 +367,102 @@
     announcements: []
   };
 
-  // Mario Player Object
-  const mario = {
-    x: 100, y: 300, w: 28, h: 36,
+  const hulk = {
+    x: 100, y: 300, w: 42, h: 48,
     vx: 0, vy: 0,
-    speed: 4.5,
+    speed: 4.8,
     grounded: false,
-    facing: 1, // 1 = right, -1 = left
-    isSuper: false
+    facing: 1,
+    powerup: 'None',
+    powerTimer: 0
   };
 
   let blocks = [];
   let enemies = [];
-  let items = []; // coins, mushrooms, flag
+  let floatingItems = [];
+  let thanosBoss = null;
   const particles = [];
 
-  // ---------- Level Generation ----------
   function initLevel() {
-    mario.x = 80; mario.y = 200; mario.vx = 0; mario.vy = 0;
+    hulk.x = 80; hulk.y = 200; hulk.vx = 0; hulk.vy = 0;
     state.cameraX = 0;
     blocks = [];
     enemies = [];
-    items = [];
+    floatingItems = [];
     particles.length = 0;
 
     const groundY = H - 80;
 
-    // Ground chunks (gaps included)
-    for (let x = 0; x < 4000; x += 40) {
-      // Create a small gap at 1200 and 2600
+    for (let x = 0; x < 4500; x += 40) {
       if ((x > 1160 && x < 1320) || (x > 2560 && x < 2720)) continue;
       blocks.push({ x, y: groundY, w: 40, h: 100, type: 'ground' });
     }
 
-    // Platforms, Bricks, Question Blocks & Pipes
     const structures = [
-      { type: 'pipe', x: 500, y: groundY - 60, w: 50, h: 60 },
-      { type: 'brick', x: 700, y: groundY - 130, w: 35, h: 35, hasCoin: true },
-      { type: 'qblock', x: 735, y: groundY - 130, w: 35, h: 35, item: 'coin' },
-      { type: 'brick', x: 770, y: groundY - 130, w: 35, h: 35, hasCoin: true },
+      { type: 'pipe', x: 500, y: groundY - 70, w: 60, h: 70 },
+      { type: 'brick', x: 700, y: groundY - 130, w: 40, h: 40 },
+      { type: 'qblock', x: 740, y: groundY - 130, w: 40, h: 40, item: 'shield' },
+      { type: 'brick', x: 780, y: groundY - 130, w: 40, h: 40 },
       
-      { type: 'pipe', x: 1000, y: groundY - 90, w: 50, h: 90 },
+      { type: 'pipe', x: 1050, y: groundY - 100, w: 60, h: 100 },
+      { type: 'qblock', x: 1450, y: groundY - 140, w: 40, h: 40, item: 'hammer' },
       
-      { type: 'qblock', x: 1450, y: groundY - 140, w: 35, h: 35, item: 'mushroom' },
-      { type: 'brick', x: 1485, y: groundY - 140, w: 35, h: 35 },
-      
-      { type: 'pipe', x: 1800, y: groundY - 120, w: 50, h: 120 },
-      { type: 'qblock', x: 2100, y: groundY - 150, w: 35, h: 35, item: 'coin' },
-      { type: 'brick', x: 2135, y: groundY - 150, w: 35, h: 35, hasCoin: true },
+      { type: 'pipe', x: 1800, y: groundY - 130, w: 60, h: 130 },
+      { type: 'qblock', x: 2100, y: groundY - 150, w: 40, h: 40, item: 'mega' },
 
-      { type: 'pipe', x: 2900, y: groundY - 80, w: 50, h: 80 },
-      { type: 'brick', x: 3200, y: groundY - 140, w: 35, h: 35, hasCoin: true },
-      { type: 'qblock', x: 3235, y: groundY - 140, w: 35, h: 35, item: 'mushroom' },
-
-      // Flagpole at the end
-      { type: 'flagpole', x: 3750, y: groundY - 260, w: 10, h: 260 }
+      { type: 'pipe', x: 2900, y: groundY - 90, w: 60, h: 90 },
+      { type: 'qblock', x: 3200, y: groundY - 140, w: 40, h: 40, item: 'shield' }
     ];
 
     blocks.push(...structures.filter(s => s.type !== 'qblock'));
-    // Separate qblocks so we can track state
     structures.filter(s => s.type === 'qblock').forEach(qb => {
       blocks.push({ ...qb, hit: false });
     });
 
-    // Goombas (Enemies)
-    const goombaSpawns = [550, 1080, 1600, 2000, 2300, 3000, 3400];
-    goombaSpawns.forEach(gx => {
-      enemies.push({ x: gx, y: groundY - 28, w: 28, h: 28, vx: -params.enemySpeed, vy: 0, alive: true, type: 'goomba' });
+    const enemySpawns = [
+      { x: 550, type: 'creep', patrolMin: 480, patrolMax: 650 },
+      { x: 950, type: 'flyer', hoverY: groundY - 180, range: 120 },
+      { x: 1300, type: 'creep', patrolMin: 1250, patrolMax: 1450 },
+      { x: 1650, type: 'flyer', hoverY: groundY - 200, range: 150 },
+      { x: 2150, type: 'creep', patrolMin: 2050, patrolMax: 2300 },
+      { x: 2700, type: 'flyer', hoverY: groundY - 190, range: 140 },
+      { x: 3300, type: 'creep', patrolMin: 3200, patrolMax: 3450 }
+    ];
+
+    enemySpawns.forEach(es => {
+      enemies.push({
+        x: es.x,
+        y: es.type === 'flyer' ? es.hoverY : groundY - 32,
+        w: 32, h: 32,
+        vx: es.type === 'flyer' ? 1.5 : 1.2,
+        vy: 0,
+        alive: true,
+        type: es.type,
+        patrolMin: es.patrolMin,
+        patrolMax: es.patrolMax,
+        hoverY: es.hoverY,
+        angle: Math.random() * Math.PI
+      });
     });
+
+    // Spawn Thanos Boss at the end (around x = 3800)
+    thanosBoss = {
+      x: 3800, y: groundY - 80, w: 60, h: 80,
+      vx: -1, vy: 0,
+      hp: 5, maxHp: 5,
+      alive: true,
+      attackTimer: 0
+    };
   }
 
-  // ---------- FX & Particle Helpers ----------
   function spawnParticles(x, y, color) {
     if (!state.particlesEnabled) return;
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       const ang = Math.random() * Math.PI * 2;
-      const spd = Math.random() * 4 + 1;
+      const spd = Math.random() * 5 + 1;
       particles.push({
         x, y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
-        life: 0.5, maxLife: 0.5, color, size: Math.random() * 4 + 2
+        life: 0.6, maxLife: 0.6, color, size: Math.random() * 5 + 2
       });
     }
   }
@@ -460,11 +472,10 @@
     state.shakeTime = Math.max(state.shakeTime, dur);
   }
 
-  function announce(text, color='#fc9838', duration=1.5) {
+  function announce(text, color='#55efc4', duration=1.5) {
     state.announcements.push({ text, color, life: duration, maxLife: duration });
   }
 
-  // ---------- Input & Controls ----------
   const keys = {};
   let dashActive = false;
 
@@ -476,10 +487,10 @@
     keys[k] = true;
 
     if (!state.running || state.paused) return;
-    if ((k === 'arrowup' || k === 'w' || k === ' ') && mario.grounded) {
-      mario.vy = -params.jumpForce;
-      mario.grounded = false;
-      synthBeep(450, 0.12, 'square', 0.08, 750);
+    if ((k === 'arrowup' || k === 'w' || k === ' ') && hulk.grounded) {
+      hulk.vy = -params.jumpForce;
+      hulk.grounded = false;
+      synthBeep(220, 0.15, 'sawtooth', 0.1, 440);
     }
     if (k === 'shift') dashActive = true;
   });
@@ -490,7 +501,6 @@
     if (k === 'shift') dashActive = false;
   });
 
-  // Mobile Touch Controls
   const moveArea = document.getElementById('moveArea');
   const jBase = document.getElementById('joystickBase');
   const jKnob = document.getElementById('joystickKnob');
@@ -537,11 +547,11 @@
   moveArea.addEventListener('touchcancel', endTouch);
 
   document.getElementById('jumpBtn').addEventListener('touchstart', e => {
-    if (mario.grounded && state.running && !state.paused) {
-      mario.vy = -params.jumpForce;
-      mario.grounded = false;
-      synthBeep(450, 0.12, 'square', 0.08, 750);
-      haptic(30);
+    if (hulk.grounded && state.running && !state.paused) {
+      hulk.vy = -params.jumpForce;
+      hulk.grounded = false;
+      synthBeep(220, 0.15, 'sawtooth', 0.1, 440);
+      haptic(35);
     }
     e.preventDefault();
   });
@@ -559,22 +569,6 @@
     togglePause();
     e.preventDefault();
   });
-
-  // ---------- UI & Overlay Bindings ----------
-  function bindSlider(id, key, fmt) {
-    const el = document.getElementById(id);
-    const vEl = document.getElementById(id + 'V');
-    el.value = params[key];
-    vEl.textContent = fmt ? fmt(params[key]) : params[key];
-    el.addEventListener('input', () => {
-      params[key] = parseFloat(el.value);
-      vEl.textContent = fmt ? fmt(params[key]) : params[key];
-    });
-  }
-  bindSlider('gravity', 'gravity', v => v.toFixed(2));
-  bindSlider('jumpForce', 'jumpForce', v => v.toFixed(1));
-  bindSlider('moveSpeed', 'moveSpeed', v => v.toFixed(1));
-  bindSlider('enemySpeed', 'enemySpeed', v => v.toFixed(2));
 
   function togglePause() {
     state.paused = !state.paused;
@@ -626,7 +620,7 @@
   function updateHUD() {
     document.getElementById('score').textContent = state.score;
     document.getElementById('coins').textContent = state.coins;
-    document.getElementById('world').textContent = "1-1";
+    document.getElementById('powerStatus').textContent = hulk.powerup;
     document.getElementById('lives').textContent = state.lives;
   }
 
@@ -636,13 +630,13 @@
     state.lives = 3;
     state.gameOver = false;
     state.shakeTime = 0;
-    mario.isSuper = false;
-    mario.w = 28; mario.h = 36;
+    hulk.powerup = 'None';
+    hulk.powerTimer = 0;
+    hulk.w = 42; hulk.h = 48;
     initLevel();
     updateHUD();
   }
 
-  // ---------- Physics & Collision Engine ----------
   function AABB(a, b) {
     return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
   }
@@ -650,112 +644,127 @@
   function update(dt) {
     if (!state.running || state.paused || state.gameOver) return;
 
-    // Movement input
+    if (hulk.powerup !== 'None') {
+      hulk.powerTimer -= dt;
+      if (hulk.powerTimer <= 0) {
+        hulk.powerup = 'None';
+        hulk.w = 42; hulk.h = 48;
+        updateHUD();
+      }
+    }
+
     let moveDir = currentDir;
     if (keys['arrowleft'] || keys['a']) moveDir = -1;
     if (keys['arrowright'] || keys['d']) moveDir = 1;
 
-    const currentSpd = params.moveSpeed * (dashActive ? 1.6 : 1);
-    mario.vx = moveDir * currentSpd;
-    if (moveDir !== 0) mario.facing = moveDir;
+    const currentSpd = params.moveSpeed * (dashActive ? 1.7 : 1);
+    hulk.vx = moveDir * currentSpd;
+    if (moveDir !== 0) hulk.facing = moveDir;
 
-    // Apply gravity
-    mario.vy += params.gravity;
+    hulk.vy += params.gravity;
 
-    // X Axis Physics & Collision
-    mario.x += mario.vx;
+    // X Axis Collision
+    hulk.x += hulk.vx;
     for (const b of blocks) {
-      if (AABB(mario, b)) {
-        if (mario.vx > 0) mario.x = b.x - mario.w;
-        else if (mario.vx < 0) mario.x = b.x + b.w;
+      if (AABB(hulk, b)) {
+        if (hulk.vx > 0) hulk.x = b.x - hulk.w;
+        else if (hulk.vx < 0) hulk.x = b.x + b.w;
       }
     }
 
-    // Y Axis Physics & Collision
-    mario.grounded = false;
-    mario.y += mario.vy;
+    // Y Axis Collision
+    hulk.grounded = false;
+    hulk.y += hulk.vy;
     for (const b of blocks) {
-      if (AABB(mario, b)) {
-        if (mario.vy > 0) { // Landing on top
-          mario.y = b.y - mario.h;
-          mario.vy = 0;
-          mario.grounded = true;
-          
-          // Check flagpole win condition
-          if (b.type === 'flagpole') {
-            state.score += 1000;
-            announce('STAGE CLEAR!', '#fc9838', 2.0);
-            synthBeep(880, 0.4, 'triangle', 0.1, 1320);
-            setTimeout(() => { resetGame(); }, 2000);
-          }
-        } else if (mario.vy < 0) { // Hitting ceiling / block from below
-          mario.y = b.y + b.h;
-          mario.vy = 0;
+      if (AABB(hulk, b)) {
+        if (hulk.vy > 0) {
+          hulk.y = b.y - hulk.h;
+          hulk.vy = 0;
+          hulk.grounded = true;
+        } else if (hulk.vy < 0) {
+          hulk.y = b.y + b.h;
+          hulk.vy = 0;
           
           if (b.type === 'qblock' && !b.hit) {
             b.hit = true;
-            synthBeep(990, 0.1, 'sine', 0.08);
-            if (b.item === 'coin') {
-              state.coins++;
-              state.score += 200;
-              updateHUD();
-            } else if (b.item === 'mushroom') {
-              mario.isSuper = true;
-              mario.h = 50;
-              state.score += 1000;
-              announce('SUPER MARIO!', '#fc9838', 1.5);
-            }
+            synthBeep(600, 0.1, 'sine', 0.1);
+            state.coins++;
+            state.score += 300;
+            updateHUD();
+
+            floatingItems.push({
+              x: b.x, y: b.y - 45, w: 32, h: 32, vy: -4, type: b.item
+            });
           } else if (b.type === 'brick') {
-            synthBeep(180, 0.08, 'sawtooth', 0.06);
-            spawnParticles(b.x + b.w/2, b.y + b.h/2, '#c84c0c');
+            synthBeep(120, 0.08, 'sawtooth', 0.1);
+            shake(5, 0.2);
+            spawnParticles(b.x + b.w/2, b.y + b.h/2, '#8b4513');
           }
         }
       }
     }
 
-    // Fall into pit check
-    if (mario.y > H + 50) {
+    // Floating Power-ups update
+    for (let i = floatingItems.length - 1; i >= 0; i--) {
+      const fi = floatingItems[i];
+      fi.y += fi.vy;
+      if (fi.vy < 0) fi.vy += 0.2;
+
+      if (AABB(hulk, fi)) {
+        hulk.powerup = fi.type.toUpperCase();
+        hulk.powerTimer = 15;
+        if (fi.type === 'mega') {
+          hulk.w = 54; hulk.h = 62;
+        }
+        synthBeep(880, 0.2, 'sine', 0.15, 1320);
+        announce(`AVENGER POWER: ${hulk.powerup}!`, '#55efc4', 1.5);
+        updateHUD();
+        floatingItems.splice(i, 1);
+      }
+    }
+
+    if (hulk.y > H + 50) {
       loseLife();
     }
 
-    // Camera follow Mario
-    state.cameraX = mario.x - W * 0.35;
+    state.cameraX = hulk.x - W * 0.35;
     if (state.cameraX < 0) state.cameraX = 0;
 
-    // Update Enemies (Goombas)
+    // Enemies update
     for (const en of enemies) {
-      if (!en.alive) continue;
-      en.x += en.vx;
-      en.vy += params.gravity;
-      en.y += en.vy;
+      if (!en.alive || en.x + en.w < state.cameraX - 50 || en.x > state.cameraX + W + 50) continue;
 
-      // Enemy block collision
-      for (const b of blocks) {
-        if (AABB(en, b)) {
-          if (en.vy > 0) { en.y = b.y - en.h; en.vy = 0; }
-          if (en.vx > 0) { en.x = b.x - en.w; en.vx *= -1; }
-          else if (en.vx < 0) { en.x = b.x + b.w; en.vx *= -1; }
+      if (en.type === 'creep') {
+        en.x += en.vx;
+        if (en.x <= en.patrolMin || en.x >= en.patrolMax) {
+          en.vx *= -1;
+        }
+      } else if (en.type === 'flyer') {
+        en.angle += 0.05;
+        en.x += en.vx;
+        en.y = en.hoverY + Math.sin(en.angle) * 35;
+        if (en.x <= hulk.x - 400 || en.x >= hulk.x + 400) {
+          en.vx *= -1;
         }
       }
 
-      // Mario vs Enemy collision
-      if (AABB(mario, en)) {
-        if (mario.vy > 0 && mario.y + mario.h - mario.vy <= en.y + 12) {
-          // Stomp Goomba
+      if (AABB(hulk, en)) {
+        if (hulk.vy > 0 && hulk.y + hulk.h - hulk.vy <= en.y + 16) {
           en.alive = false;
-          mario.vy = -8;
-          state.score += 100;
+          hulk.vy = -9;
+          state.score += 200;
           updateHUD();
-          synthBeep(300, 0.08, 'square', 0.08, 150);
-          spawnParticles(en.x + en.w/2, en.y + en.h/2, '#e83800');
+          synthBeep(150, 0.1, 'square', 0.12, 80);
+          shake(6, 0.2);
+          spawnParticles(en.x + en.w/2, en.y + en.h/2, '#9b59b6');
         } else {
-          // Mario gets hurt
-          if (mario.isSuper) {
-            mario.isSuper = false;
-            mario.h = 36;
-            mario.y += 14;
-            synthBeep(200, 0.2, 'sawtooth', 0.1);
-            shake(8, 0.3);
+          if (hulk.powerup !== 'None') {
+            hulk.powerup = 'None';
+            hulk.w = 42; hulk.h = 48;
+            en.alive = false;
+            synthBeep(300, 0.3, 'sawtooth', 0.2);
+            shake(10, 0.3);
+            updateHUD();
           } else {
             loseLife();
             break;
@@ -764,7 +773,52 @@
       }
     }
 
-    // Shake decay & particle updates
+    // Thanos Boss Update
+    if (thanosBoss && thanosBoss.alive) {
+      thanosBoss.x += thanosBoss.vx;
+      thanosBoss.vy += params.gravity;
+      thanosBoss.y += thanosBoss.vy;
+
+      for (const b of blocks) {
+        if (AABB(thanosBoss, b)) {
+          if (thanosBoss.vy > 0) { thanosBoss.y = b.y - thanosBoss.h; thanosBoss.vy = 0; }
+          if (thanosBoss.vx > 0) { thanosBoss.x = b.x - thanosBoss.w; thanosBoss.vx *= -1; }
+          else if (thanosBoss.vx < 0) { thanosBoss.x = b.x + b.w; thanosBoss.vx *= -1; }
+        }
+      }
+
+      // Thanos Boss collision with Hulk
+      if (AABB(hulk, thanosBoss)) {
+        if (hulk.vy > 0 && hulk.y + hulk.h - hulk.vy <= thanosBoss.y + 20) {
+          thanosBoss.hp--;
+          hulk.vy = -10;
+          synthBeep(100, 0.2, 'sawtooth', 0.2, 50);
+          shake(12, 0.4);
+          spawnParticles(thanosBoss.x + thanosBoss.w/2, thanosBoss.y + thanosBoss.h/2, '#e74c3c');
+          announce(`THANOS HIT! HP: ${thanosBoss.hp}`, '#e74c3c', 1.0);
+
+          if (thanosBoss.hp <= 0) {
+            thanosBoss.alive = false;
+            state.score += 5000;
+            announce('THANOS DEFEATED! YOU WIN!', '#55efc4', 3.0);
+            synthBeep(523, 0.6, 'triangle', 0.2, 1046);
+            setTimeout(() => { resetGame(); }, 3000);
+          }
+        } else {
+          if (hulk.powerup !== 'None') {
+            hulk.powerup = 'None';
+            hulk.w = 42; hulk.h = 48;
+            thanosBoss.hp--;
+            synthBeep(120, 0.3, 'square', 0.2);
+            shake(15, 0.4);
+            updateHUD();
+          } else {
+            loseLife();
+          }
+        }
+      }
+    }
+
     if (state.shakeTime > 0) state.shakeTime -= dt;
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
@@ -782,18 +836,17 @@
   function loseLife() {
     state.lives--;
     updateHUD();
-    synthBeep(120, 0.5, 'sawtooth', 0.15, 40);
-    shake(15, 0.5);
+    synthBeep(90, 0.6, 'sawtooth', 0.2, 30);
+    shake(20, 0.6);
     if (state.lives <= 0) {
       state.gameOver = true;
       state.running = false;
-      showOverlay("GAME OVER", `Final Score: <b>${state.score}</b><br>Coins Collected: <b>${state.coins}</b>`, "RESTART");
+      showOverlay("HULK DEFEATED BY THANOS", `Final Rage Score: <b>${state.score}</b>`, "TRY AGAIN");
     } else {
       initLevel();
     }
   }
 
-  // ---------- Rendering Engine ----------
   let lastTime = performance.now();
   let frameCount = 0, fpsTimer = 0;
 
@@ -809,80 +862,101 @@
 
     ctx.translate(-state.cameraX, 0);
 
-    // Draw Background Hills / Clouds (Parallax effect)
-    ctx.fillStyle = '#4c84dc';
-    ctx.fillRect(state.cameraX + 200, H - 280, 120, 100);
-    ctx.fillRect(state.cameraX + 800, H - 320, 160, 140);
-    ctx.fillRect(state.cameraX + 1800, H - 300, 140, 120);
+    // City skyline backdrop
+    ctx.fillStyle = '#222233';
+    ctx.fillRect(state.cameraX + 150, H - 350, 140, 180);
+    ctx.fillRect(state.cameraX + 750, H - 400, 180, 230);
+    ctx.fillRect(state.cameraX + 1700, H - 380, 160, 210);
 
-    // Draw Blocks
+    // Blocks
     for (const b of blocks) {
       if (b.x + b.w < state.cameraX - 50 || b.x > state.cameraX + W + 50) continue;
       
       if (b.type === 'ground') {
-        ctx.fillStyle = '#c84c0c';
+        ctx.fillStyle = '#2c3e50';
         ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.fillStyle = '#fc9838';
+        ctx.fillStyle = '#16a085';
         ctx.fillRect(b.x, b.y, b.w, 10);
       } else if (b.type === 'brick') {
-        ctx.fillStyle = '#c84c0c';
+        ctx.fillStyle = '#8b4513';
         ctx.fillRect(b.x, b.y, b.w, b.h);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 1.5;
         ctx.strokeRect(b.x, b.y, b.w, b.h);
       } else if (b.type === 'qblock') {
-        ctx.fillStyle = b.hit ? '#888' : '#fc9838';
+        ctx.fillStyle = b.hit ? '#555' : '#f39c12';
         ctx.fillRect(b.x, b.y, b.w, b.h);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 1.5;
         ctx.strokeRect(b.x, b.y, b.w, b.h);
         if (!b.hit) {
-          ctx.fillStyle = '#000';
-          ctx.font = 'bold 18px monospace';
-          ctx.fillText('?', b.x + 11, b.y + 25);
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 20px monospace';
+          ctx.fillText('★', b.x + 10, b.y + 27);
         }
       } else if (b.type === 'pipe') {
-        ctx.fillStyle = '#00a800';
+        ctx.fillStyle = '#27ae60';
         ctx.fillRect(b.x, b.y, b.w, b.h);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 2;
         ctx.strokeRect(b.x, b.y, b.w, b.h);
-        ctx.fillRect(b.x - 4, b.y, b.w + 8, 16);
-        ctx.strokeRect(b.x - 4, b.y, b.w + 8, 16);
-      } else if (b.type === 'flagpole') {
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.fillStyle = '#00a800';
-        ctx.beginPath();
-        ctx.arc(b.x + 5, b.y, 10, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(b.x - 6, b.y, b.w + 12, 18);
+        ctx.strokeRect(b.x - 6, b.y, b.w + 12, 18);
       }
     }
 
-    // Draw Enemies (Goombas)
-    for (const en of enemies) {
-      if (!en.alive || en.x + en.w < state.cameraX - 50 || en.x > state.cameraX + W + 50) continue;
-      ctx.fillStyle = '#884400';
-      ctx.fillRect(en.x, en.y, en.w, en.h);
-      // Goomba eyes
+    // Render Floating Power-ups
+    for (const fi of floatingItems) {
+      ctx.fillStyle = fi.type === 'shield' ? '#3498db' : (fi.type === 'hammer' ? '#e67e22' : '#9b59b6');
+      ctx.fillRect(fi.x + 4, fi.y + 4, fi.w - 8, fi.h - 8);
       ctx.fillStyle = '#fff';
-      ctx.fillRect(en.x + 4, en.y + 6, 6, 8);
-      ctx.fillRect(en.x + 18, en.y + 6, 6, 8);
-      ctx.fillStyle = '#000';
-      ctx.fillRect(en.x + 6, en.y + 9, 3, 4);
-      ctx.fillRect(en.x + 20, en.y + 9, 3, 4);
+      ctx.font = '12px monospace';
+      ctx.fillText(fi.type[0].toUpperCase(), fi.x + 11, fi.y + 22);
     }
 
-    // Draw Mario
-    ctx.fillStyle = mario.isSuper ? '#00f2fe' : '#e83800';
-    ctx.fillRect(mario.x, mario.y, mario.w, mario.h);
-    // Overalls & Hat accents
-    ctx.fillStyle = '#0055ff';
-    ctx.fillRect(mario.x + 4, mario.y + mario.h - 14, mario.w - 8, 14);
-    ctx.fillStyle = mario.isSuper ? '#00f2fe' : '#e83800';
-    ctx.fillRect(mario.x + (mario.facing > 0 ? 14 : 0), mario.y + 4, 14, 10);
+    // Enemies
+    for (const en of enemies) {
+      if (!en.alive || en.x + en.w < state.cameraX - 50 || en.x > state.cameraX + W + 50) continue;
+      
+      if (en.type === 'creep') {
+        ctx.fillStyle = '#7f8c8d';
+        ctx.fillRect(en.x, en.y, en.w, en.h);
+        ctx.fillStyle = '#e74c3c';
+        ctx.fillRect(en.x + 6, en.y + 8, 20, 6);
+      } else if (en.type === 'flyer') {
+        ctx.fillStyle = '#8e44ad';
+        ctx.beginPath();
+        ctx.ellipse(en.x + 16, en.y + 16, 16, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#f1c40f';
+        ctx.fillRect(en.x + 10, en.y + 12, 12, 6);
+      }
+    }
 
-    // Draw Particles
+    // Thanos Boss Render
+    if (thanosBoss && thanosBoss.alive) {
+      ctx.fillStyle = '#8e44ad'; // Thanos purple skin
+      ctx.fillRect(thanosBoss.x, thanosBoss.y, thanosBoss.w, thanosBoss.h);
+      ctx.fillStyle = '#f1c40f'; // Golden armor
+      ctx.fillRect(thanosBoss.x + 6, thanosBoss.y + 10, thanosBoss.w - 12, 22);
+      // Boss Health Bar above Thanos
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(thanosBoss.x - 10, thanosBoss.y - 18, 80, 10);
+      ctx.fillStyle = '#e74c3c';
+      ctx.fillRect(thanosBoss.x - 8, thanosBoss.y - 16, (76 * (thanosBoss.hp / thanosBoss.maxHp)), 6);
+    }
+
+    // Hulk Character Render
+    ctx.fillStyle = hulk.powerup === 'MEGA' ? '#00ffcc' : '#2ecc71';
+    ctx.fillRect(hulk.x, hulk.y, hulk.w, hulk.h);
+    ctx.fillStyle = '#8e44ad';
+    ctx.fillRect(hulk.x + 4, hulk.y + hulk.h - 20, hulk.w - 8, 20);
+    if (hulk.powerup !== 'None') {
+      ctx.strokeStyle = hulk.powerup === 'SHIELD' ? '#3498db' : '#e67e22';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(hulk.x - 3, hulk.y - 3, hulk.w + 6, hulk.h + 6);
+    }
+
     for (const p of particles) {
       ctx.fillStyle = p.color;
       ctx.globalAlpha = p.life / p.maxLife;
@@ -890,13 +964,12 @@
     }
     ctx.globalAlpha = 1.0;
 
-    // Draw Announcements
     for (const a of state.announcements) {
       ctx.fillStyle = a.color;
-      ctx.font = 'bold 24px monospace';
+      ctx.font = 'bold 26px monospace';
       ctx.textAlign = 'center';
       ctx.shadowColor = '#000';
-      ctx.shadowBlur = 6;
+      ctx.shadowBlur = 8;
       ctx.fillText(a.text, state.cameraX + W / 2, H * 0.35);
       ctx.shadowBlur = 0;
     }
@@ -921,7 +994,6 @@
     requestAnimationFrame(loop);
   }
 
-  // ---------- Initialize ----------
   resetGame();
   requestAnimationFrame(loop);
 })();

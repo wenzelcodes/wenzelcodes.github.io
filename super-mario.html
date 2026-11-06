@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
-<title>Hulk vs Thanos - Boss Battle Edition</title>
+<title>Hulk vs Thanos - Cartoon Edition</title>
 <style>
   * { 
     box-sizing: border-box; 
@@ -20,7 +20,7 @@
     width: 100%; 
     height: 100%; 
     overflow: hidden; 
-    background: #1a1a24; 
+    background: #283747; 
     color: #fff; 
     font-family: monospace;
     touch-action: none;
@@ -30,7 +30,7 @@
     position: absolute; 
     inset: 0; 
     display: block; 
-    background: #1a1a24; 
+    background: linear-gradient(to bottom, #34495e, #1a252f); 
     touch-action: none;
   }
   #hud {
@@ -47,13 +47,13 @@
     z-index: 10;
   }
   #hud .stat {
-    background: rgba(0, 0, 0, 0.7); 
+    background: rgba(20, 30, 40, 0.85); 
     padding: 4px 8px; 
-    border: 1px solid #2e8b57;
+    border: 1px solid #2ecc71;
     border-radius: 4px;
-    box-shadow: 0 0 6px rgba(46, 139, 87, 0.4);
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
   }
-  #hud .stat b { color: #55efc4; }
+  #hud .stat b { color: #2ecc71; }
   
   #controls {
     position: absolute; 
@@ -62,8 +62,8 @@
     width: 260px; 
     max-height: calc(100% - 60px); 
     overflow-y: auto;
-    background: rgba(15, 20, 30, 0.92); 
-    border: 1px solid #2e8b57;
+    background: rgba(20, 30, 45, 0.95); 
+    border: 1px solid #2ecc71;
     border-radius: 6px; 
     padding: 10px; 
     font-size: 11px;
@@ -75,8 +75,8 @@
   #controls h3 { 
     font-size: 12px; 
     margin-bottom: 6px; 
-    color: #55efc4; 
-    border-bottom: 1px solid #2e8b57; 
+    color: #2ecc71; 
+    border-bottom: 1px solid #2ecc71; 
     padding-bottom: 4px; 
   }
   .row { 
@@ -86,7 +86,7 @@
     margin: 4px 0; 
     gap: 6px; 
   }
-  .row label { flex: 1; color: #a3e4d7; font-size: 11px; }
+  .row label { flex: 1; color: #a9dfbf; font-size: 11px; }
   .row input[type=range] { flex: 1.2; height: 20px; cursor: pointer; }
   .row .val { 
     width: 40px; 
@@ -103,9 +103,9 @@
   }
   .btns button {
     flex: 1 1 45%; 
-    background: #143826; 
+    background: #1b4f72; 
     color: #cfe; 
-    border: 1px solid #2e8b57;
+    border: 1px solid #2ecc71;
     padding: 8px; 
     border-radius: 4px; 
     cursor: pointer; 
@@ -113,16 +113,16 @@
     font-size: 11px;
     min-height: 36px;
   }
-  .btns button:hover { background: #1e5638; }
-  .btns button.active { background: #2e8b57; color: #fff; font-weight: bold; }
+  .btns button:hover { background: #2471a3; }
+  .btns button.active { background: #2ecc71; color: #000; font-weight: bold; }
   
   #togglePanel {
     position: absolute; 
     top: 44px; 
     right: 8px;
-    background: #143826; 
+    background: #1b4f72; 
     color: #cfe; 
-    border: 1px solid #2e8b57;
+    border: 1px solid #2ecc71;
     padding: 8px 12px; 
     border-radius: 4px; 
     cursor: pointer; 
@@ -143,8 +143,8 @@
   .touch-btn {
     position: absolute;
     pointer-events: auto;
-    background: rgba(46,139,87,0.25);
-    border: 2px solid rgba(46,139,87,0.6);
+    background: rgba(46,204,113,0.25);
+    border: 2px solid rgba(46,204,113,0.6);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -156,7 +156,7 @@
     font-weight: bold;
   }
   .touch-btn:active, .touch-btn.active {
-    background: rgba(46,139,87,0.6);
+    background: rgba(46,204,113,0.6);
     border-color: #fff;
     transform: scale(0.92);
   }
@@ -180,8 +180,8 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: rgba(46,139,87,0.15);
-    border: 2px solid rgba(46,139,87,0.5);
+    background: rgba(46,204,113,0.15);
+    border: 2px solid rgba(46,204,113,0.5);
     display: none;
     pointer-events: none;
   }
@@ -191,8 +191,8 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(85,239,196,0.5);
-    border: 2px solid #2e8b57;
+    background: rgba(46,204,113,0.5);
+    border: 2px solid #2ecc71;
     display: none;
     pointer-events: none;
   }
@@ -209,14 +209,14 @@
     pointer-events: auto;
   }
   #overlay h1 { 
-    color: #55efc4; 
+    color: #2ecc71; 
     font-size: 32px; 
     margin-bottom: 12px; 
-    text-shadow: 0 0 12px #2e8b57; 
+    text-shadow: 0 0 12px #27ae60; 
     letter-spacing: 2px;
   }
   #overlay p { 
-    color: #a3e4d7; 
+    color: #a9dfbf; 
     margin-bottom: 16px; 
     font-size: 13px; 
     text-align: center; 
@@ -224,18 +224,18 @@
     line-height: 1.6;
   }
   #overlay button {
-    background: #143826; 
+    background: #1b4f72; 
     color: #fff; 
-    border: 2px solid #2e8b57; 
+    border: 2px solid #2ecc71; 
     padding: 12px 28px;
     border-radius: 6px; 
     cursor: pointer; 
     font-family: inherit; 
     font-size: 16px;
     min-height: 48px;
-    box-shadow: 0 0 10px rgba(46,139,87,0.5);
+    box-shadow: 0 0 10px rgba(46,204,113,0.5);
   }
-  #overlay button:hover { background: #2e8b57; color: #000; }
+  #overlay button:hover { background: #2ecc71; color: #000; }
   #overlay.hidden { display: none; }
   
   @media (max-width: 700px) {
@@ -368,7 +368,7 @@
   };
 
   const hulk = {
-    x: 100, y: 300, w: 42, h: 48,
+    x: 100, y: 300, w: 46, h: 50,
     vx: 0, vy: 0,
     speed: 4.8,
     grounded: false,
@@ -433,7 +433,7 @@
       enemies.push({
         x: es.x,
         y: es.type === 'flyer' ? es.hoverY : groundY - 32,
-        w: 32, h: 32,
+        w: 34, h: 34,
         vx: es.type === 'flyer' ? 1.5 : 1.2,
         vy: 0,
         alive: true,
@@ -445,24 +445,22 @@
       });
     });
 
-    // Spawn Thanos Boss at the end (around x = 3800)
     thanosBoss = {
-      x: 3800, y: groundY - 80, w: 60, h: 80,
-      vx: -1, vy: 0,
+      x: 3800, y: groundY - 90, w: 64, h: 90,
+      vx: -1.2, vy: 0,
       hp: 5, maxHp: 5,
-      alive: true,
-      attackTimer: 0
+      alive: true
     };
   }
 
   function spawnParticles(x, y, color) {
     if (!state.particlesEnabled) return;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
       const ang = Math.random() * Math.PI * 2;
-      const spd = Math.random() * 5 + 1;
+      const spd = Math.random() * 6 + 1;
       particles.push({
         x, y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
-        life: 0.6, maxLife: 0.6, color, size: Math.random() * 5 + 2
+        life: 0.5, maxLife: 0.5, color, size: Math.random() * 6 + 3
       });
     }
   }
@@ -472,7 +470,7 @@
     state.shakeTime = Math.max(state.shakeTime, dur);
   }
 
-  function announce(text, color='#55efc4', duration=1.5) {
+  function announce(text, color='#2ecc71', duration=1.5) {
     state.announcements.push({ text, color, life: duration, maxLife: duration });
   }
 
@@ -490,7 +488,7 @@
     if ((k === 'arrowup' || k === 'w' || k === ' ') && hulk.grounded) {
       hulk.vy = -params.jumpForce;
       hulk.grounded = false;
-      synthBeep(220, 0.15, 'sawtooth', 0.1, 440);
+      synthBeep(240, 0.15, 'square', 0.1, 500);
     }
     if (k === 'shift') dashActive = true;
   });
@@ -550,7 +548,7 @@
     if (hulk.grounded && state.running && !state.paused) {
       hulk.vy = -params.jumpForce;
       hulk.grounded = false;
-      synthBeep(220, 0.15, 'sawtooth', 0.1, 440);
+      synthBeep(240, 0.15, 'square', 0.1, 500);
       haptic(35);
     }
     e.preventDefault();
@@ -632,7 +630,7 @@
     state.shakeTime = 0;
     hulk.powerup = 'None';
     hulk.powerTimer = 0;
-    hulk.w = 42; hulk.h = 48;
+    hulk.w = 46; hulk.h = 50;
     initLevel();
     updateHUD();
   }
@@ -648,7 +646,7 @@
       hulk.powerTimer -= dt;
       if (hulk.powerTimer <= 0) {
         hulk.powerup = 'None';
-        hulk.w = 42; hulk.h = 48;
+        hulk.w = 46; hulk.h = 50;
         updateHUD();
       }
     }
@@ -687,7 +685,7 @@
           
           if (b.type === 'qblock' && !b.hit) {
             b.hit = true;
-            synthBeep(600, 0.1, 'sine', 0.1);
+            synthBeep(700, 0.1, 'sine', 0.1);
             state.coins++;
             state.score += 300;
             updateHUD();
@@ -696,9 +694,9 @@
               x: b.x, y: b.y - 45, w: 32, h: 32, vy: -4, type: b.item
             });
           } else if (b.type === 'brick') {
-            synthBeep(120, 0.08, 'sawtooth', 0.1);
+            synthBeep(140, 0.08, 'sawtooth', 0.1);
             shake(5, 0.2);
-            spawnParticles(b.x + b.w/2, b.y + b.h/2, '#8b4513');
+            spawnParticles(b.x + b.w/2, b.y + b.h/2, '#d35400');
           }
         }
       }
@@ -714,10 +712,10 @@
         hulk.powerup = fi.type.toUpperCase();
         hulk.powerTimer = 15;
         if (fi.type === 'mega') {
-          hulk.w = 54; hulk.h = 62;
+          hulk.w = 58; hulk.h = 64;
         }
         synthBeep(880, 0.2, 'sine', 0.15, 1320);
-        announce(`AVENGER POWER: ${hulk.powerup}!`, '#55efc4', 1.5);
+        announce(`POWER: ${hulk.powerup}!`, '#2ecc71', 1.5);
         updateHUD();
         floatingItems.splice(i, 1);
       }
@@ -754,15 +752,15 @@
           hulk.vy = -9;
           state.score += 200;
           updateHUD();
-          synthBeep(150, 0.1, 'square', 0.12, 80);
+          synthBeep(180, 0.1, 'square', 0.12, 90);
           shake(6, 0.2);
           spawnParticles(en.x + en.w/2, en.y + en.h/2, '#9b59b6');
         } else {
           if (hulk.powerup !== 'None') {
             hulk.powerup = 'None';
-            hulk.w = 42; hulk.h = 48;
+            hulk.w = 46; hulk.h = 50;
             en.alive = false;
-            synthBeep(300, 0.3, 'sawtooth', 0.2);
+            synthBeep(350, 0.3, 'sawtooth', 0.2);
             shake(10, 0.3);
             updateHUD();
           } else {
@@ -787,27 +785,26 @@
         }
       }
 
-      // Thanos Boss collision with Hulk
       if (AABB(hulk, thanosBoss)) {
         if (hulk.vy > 0 && hulk.y + hulk.h - hulk.vy <= thanosBoss.y + 20) {
           thanosBoss.hp--;
           hulk.vy = -10;
           synthBeep(100, 0.2, 'sawtooth', 0.2, 50);
           shake(12, 0.4);
-          spawnParticles(thanosBoss.x + thanosBoss.w/2, thanosBoss.y + thanosBoss.h/2, '#e74c3c');
+          spawnParticles(thanosBoss.x + thanosBoss.w/2, thanosBoss.y + thanosBoss.h/2, '#f1c40f');
           announce(`THANOS HIT! HP: ${thanosBoss.hp}`, '#e74c3c', 1.0);
 
           if (thanosBoss.hp <= 0) {
             thanosBoss.alive = false;
             state.score += 5000;
-            announce('THANOS DEFEATED! YOU WIN!', '#55efc4', 3.0);
+            announce('THANOS DEFEATED! VICTORY!', '#2ecc71', 3.0);
             synthBeep(523, 0.6, 'triangle', 0.2, 1046);
             setTimeout(() => { resetGame(); }, 3000);
           }
         } else {
           if (hulk.powerup !== 'None') {
             hulk.powerup = 'None';
-            hulk.w = 42; hulk.h = 48;
+            hulk.w = 46; hulk.h = 50;
             thanosBoss.hp--;
             synthBeep(120, 0.3, 'square', 0.2);
             shake(15, 0.4);
@@ -836,12 +833,12 @@
   function loseLife() {
     state.lives--;
     updateHUD();
-    synthBeep(90, 0.6, 'sawtooth', 0.2, 30);
+    synthBeep(80, 0.6, 'sawtooth', 0.2, 30);
     shake(20, 0.6);
     if (state.lives <= 0) {
       state.gameOver = true;
       state.running = false;
-      showOverlay("HULK DEFEATED BY THANOS", `Final Rage Score: <b>${state.score}</b>`, "TRY AGAIN");
+      showOverlay("DEFEATED BY THANOS", `Final Score: <b>${state.score}</b>`, "TRY AGAIN");
     } else {
       initLevel();
     }
@@ -862,40 +859,42 @@
 
     ctx.translate(-state.cameraX, 0);
 
-    // City skyline backdrop
-    ctx.fillStyle = '#222233';
-    ctx.fillRect(state.cameraX + 150, H - 350, 140, 180);
-    ctx.fillRect(state.cameraX + 750, H - 400, 180, 230);
-    ctx.fillRect(state.cameraX + 1700, H - 380, 160, 210);
+    // Cartoon City Skyline Background
+    ctx.fillStyle = '#212f3d';
+    ctx.fillRect(state.cameraX + 150, H - 380, 140, 200);
+    ctx.fillStyle = '#1b2631';
+    ctx.fillRect(state.cameraX + 750, H - 420, 180, 240);
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillRect(state.cameraX + 1700, H - 400, 160, 220);
 
     // Blocks
     for (const b of blocks) {
       if (b.x + b.w < state.cameraX - 50 || b.x > state.cameraX + W + 50) continue;
       
       if (b.type === 'ground') {
-        ctx.fillStyle = '#2c3e50';
+        ctx.fillStyle = '#34495e';
         ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.fillStyle = '#16a085';
-        ctx.fillRect(b.x, b.y, b.w, 10);
+        ctx.fillStyle = '#27ae60';
+        ctx.fillRect(b.x, b.y, b.w, 12);
       } else if (b.type === 'brick') {
-        ctx.fillStyle = '#8b4513';
+        ctx.fillStyle = '#d35400';
         ctx.fillRect(b.x, b.y, b.w, b.h);
         ctx.strokeStyle = '#000';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.strokeRect(b.x, b.y, b.w, b.h);
       } else if (b.type === 'qblock') {
-        ctx.fillStyle = b.hit ? '#555' : '#f39c12';
+        ctx.fillStyle = b.hit ? '#7f8c8d' : '#f1c40f';
         ctx.fillRect(b.x, b.y, b.w, b.h);
         ctx.strokeStyle = '#000';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.strokeRect(b.x, b.y, b.w, b.h);
         if (!b.hit) {
           ctx.fillStyle = '#fff';
-          ctx.font = 'bold 20px monospace';
-          ctx.fillText('★', b.x + 10, b.y + 27);
+          ctx.font = 'bold 22px monospace';
+          ctx.fillText('★', b.x + 9, b.y + 28);
         }
       } else if (b.type === 'pipe') {
-        ctx.fillStyle = '#27ae60';
+        ctx.fillStyle = '#2ecc71';
         ctx.fillRect(b.x, b.y, b.w, b.h);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 2;
@@ -905,56 +904,70 @@
       }
     }
 
-    // Render Floating Power-ups
+    // Floating Power-ups
     for (const fi of floatingItems) {
       ctx.fillStyle = fi.type === 'shield' ? '#3498db' : (fi.type === 'hammer' ? '#e67e22' : '#9b59b6');
-      ctx.fillRect(fi.x + 4, fi.y + 4, fi.w - 8, fi.h - 8);
+      ctx.beginPath();
+      ctx.arc(fi.x + 16, fi.y + 16, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
       ctx.fillStyle = '#fff';
-      ctx.font = '12px monospace';
-      ctx.fillText(fi.type[0].toUpperCase(), fi.x + 11, fi.y + 22);
+      ctx.font = 'bold 14px monospace';
+      ctx.fillText(fi.type[0].toUpperCase(), fi.x + 10, fi.y + 21);
     }
 
-    // Enemies
+    // Enemies (Creeps & Flying Outriders)
     for (const en of enemies) {
       if (!en.alive || en.x + en.w < state.cameraX - 50 || en.x > state.cameraX + W + 50) continue;
       
       if (en.type === 'creep') {
-        ctx.fillStyle = '#7f8c8d';
+        ctx.fillStyle = '#95a5a6';
         ctx.fillRect(en.x, en.y, en.w, en.h);
-        ctx.fillStyle = '#e74c3c';
-        ctx.fillRect(en.x + 6, en.y + 8, 20, 6);
+        ctx.fillStyle = '#c0392b';
+        ctx.fillRect(en.x + 4, en.y + 6, 26, 6);
       } else if (en.type === 'flyer') {
         ctx.fillStyle = '#8e44ad';
         ctx.beginPath();
-        ctx.ellipse(en.x + 16, en.y + 16, 16, 10, 0, 0, Math.PI * 2);
+        ctx.ellipse(en.x + 17, en.y + 17, 17, 11, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#f1c40f';
-        ctx.fillRect(en.x + 10, en.y + 12, 12, 6);
+        ctx.fillStyle = '#f39c12';
+        ctx.fillRect(en.x + 10, en.y + 13, 14, 6);
       }
     }
 
-    // Thanos Boss Render
+    // Thanos Boss (Cartoon Style with Golden Armor)
     if (thanosBoss && thanosBoss.alive) {
-      ctx.fillStyle = '#8e44ad'; // Thanos purple skin
+      ctx.fillStyle = '#6c3483';
       ctx.fillRect(thanosBoss.x, thanosBoss.y, thanosBoss.w, thanosBoss.h);
-      ctx.fillStyle = '#f1c40f'; // Golden armor
-      ctx.fillRect(thanosBoss.x + 6, thanosBoss.y + 10, thanosBoss.w - 12, 22);
-      // Boss Health Bar above Thanos
-      ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      ctx.fillRect(thanosBoss.x - 10, thanosBoss.y - 18, 80, 10);
+      ctx.fillStyle = '#d4ac0d'; // Golden Armor
+      ctx.fillRect(thanosBoss.x + 8, thanosBoss.y + 12, thanosBoss.w - 16, 30);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(thanosBoss.x + 14, thanosBoss.y + 20, 10, 6);
+      ctx.fillRect(thanosBoss.x + 40, thanosBoss.y + 20, 10, 6);
+
+      // Boss HP Bar
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(thanosBoss.x - 8, thanosBoss.y - 20, 80, 12);
       ctx.fillStyle = '#e74c3c';
-      ctx.fillRect(thanosBoss.x - 8, thanosBoss.y - 16, (76 * (thanosBoss.hp / thanosBoss.maxHp)), 6);
+      ctx.fillRect(thanosBoss.x - 6, thanosBoss.y - 18, (76 * (thanosBoss.hp / thanosBoss.maxHp)), 8);
     }
 
-    // Hulk Character Render
+    // Hulk Character (Cartoon Muscular Vector Style)
     ctx.fillStyle = hulk.powerup === 'MEGA' ? '#00ffcc' : '#2ecc71';
     ctx.fillRect(hulk.x, hulk.y, hulk.w, hulk.h);
-    ctx.fillStyle = '#8e44ad';
-    ctx.fillRect(hulk.x + 4, hulk.y + hulk.h - 20, hulk.w - 8, 20);
+    // Shredded purple shorts
+    ctx.fillStyle = '#7d3c98';
+    ctx.fillRect(hulk.x + 4, hulk.y + hulk.h - 18, hulk.w - 8, 18);
+    // Angry Cartoon Brow
+    ctx.fillStyle = '#145a32';
+    ctx.fillRect(hulk.x + (hulk.facing > 0 ? 22 : 4), hulk.y + 6, 20, 8);
+
     if (hulk.powerup !== 'None') {
       ctx.strokeStyle = hulk.powerup === 'SHIELD' ? '#3498db' : '#e67e22';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(hulk.x - 3, hulk.y - 3, hulk.w + 6, hulk.h + 6);
+      ctx.lineWidth = 4;
+      ctx.strokeRect(hulk.x - 4, hulk.y - 4, hulk.w + 8, hulk.h + 8);
     }
 
     for (const p of particles) {

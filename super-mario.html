@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>Super Mario JS - Responsive Mobile & Desktop One-Pager</title>
+<style>
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    user-select: none; 
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  html, body { 
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden; 
+    background: #5c94fc; 
+    color: #fff; 
+    font-family: monospace;
+    touch-action: none;
+    position: fixed;
+  }
+  #game { 
+    position: absolute; 
+    inset: 0; 
+    display: block; 
+    background: #5c94fc; 
+    touch-action: none;
+  }
+  #hud {
+    position: absolute; 
+    top: 8px; 
+    left: 8px; 
+    right: 8px;
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 6px; 
+    pointer-events: none;
+    font-size: 12px; 
+    text-shadow: 0 0 4px #000;
+    z-index: 10;
+  }
+  #hud .stat {
+    background: rgba(0, 0, 0, 0.6); 
+    padding: 4px 8px; 
+    border: 1px solid #fc9838;
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(252, 152, 56, 0.3);
+  }
+  #hud .stat b { color: #fc9838; }
+  
+  #controls {
+    position: absolute; 
+    top: 44px; 
+    right: 8px;
+    width: 260px; 
+    max-height: calc(100% - 60px); 
+    overflow-y: auto;
+    background: rgba(15, 20, 35, 0.92); 
+    border: 1px solid #fc9838;
+    border-radius: 6px; 
+    padding: 10px; 
+    font-size: 11px;
+    transition: transform 0.25s ease;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+  }
+  #controls.hidden { transform: translateX(calc(100% + 20px)); }
+  #controls h3 { 
+    font-size: 12px; 
+    margin-bottom: 6px; 
+    color: #fc9838; 
+    border-bottom: 1px solid #fc9838; 
+    padding-bottom: 4px; 
+  }
+  .row { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin: 4px 0; 
+    gap: 6px; 
+  }
+  .row label { flex: 1; color: #fcc; font-size: 11px; }
+  .row input[type=range] { flex: 1.2; height: 20px; cursor: pointer; }
+  .row .val { 
+    width: 40px; 
+    text-align: right; 
+    color: #fff; 
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+  }
+  .btns { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 4px; 
+    margin-top: 6px; 
+  }
+  .btns button {
+    flex: 1 1 45%; 
+    background: #334; 
+    color: #cfe; 
+    border: 1px solid #fc9838;
+    padding: 8px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-family: inherit; 
+    font-size: 11px;
+    min-height: 36px;
+  }
+  .btns button:hover { background: #445; }
+  .btns button.active { background: #fc9838; color: #001; font-weight: bold; }
+  
+  #togglePanel {
+    position: absolute; 
+    top: 44px; 
+    right: 8px;
+    background: #334; 
+    color: #cfe; 
+    border: 1px solid #fc9838;
+    padding: 8px 12px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-family: inherit; 
+    font-size: 14px; 
+    z-index: 21;
+    min-width: 40px;
+    min-height: 36px;
+  }
+  
+  #mobileControls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 15;
+  }
+  
+  .touch-btn {
+    position: absolute;
+    pointer-events: auto;
+    background: rgba(252,152,56,0.25);
+    border: 2px solid rgba(252,152,56,0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: rgba(255,230,200,0.95);
+    transition: all 0.1s;
+    touch-action: none;
+    font-weight: bold;
+  }
+  .touch-btn:active, .touch-btn.active {
+    background: rgba(252,152,56,0.6);
+    border-color: #fff;
+    transform: scale(0.92);
+  }
+  
+  #jumpBtn { right: 20px; bottom: 40px; width: 75px; height: 75px; font-size: 24px; }
+  #dashBtn { right: 110px; bottom: 50px; width: 60px; height: 60px; font-size: 14px; }
+  #pauseBtnMobile { left: 20px; bottom: 20px; width: 50px; height: 50px; font-size: 18px; }
+  
+  #moveArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    pointer-events: auto;
+    touch-action: none;
+  }
+  
+  #joystickBase {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(252,152,56,0.15);
+    border: 2px solid rgba(252,152,56,0.5);
+    display: none;
+    pointer-events: none;
+  }
+  
+  #joystickKnob {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255,200,100,0.5);
+    border: 2px solid #fc9838;
+    display: none;
+    pointer-events: none;
+  }
+  
+  #overlay {
+    position: absolute; 
+    inset: 0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column; 
+    background: rgba(0,0,0,0.85); 
+    z-index: 30; 
+    pointer-events: auto;
+  }
+  #overlay h1 { 
+    color: #fc9838; 
+    font-size: 32px; 
+    margin-bottom: 12px; 
+    text-shadow: 0 0 12px #e83800; 
+    letter-spacing: 2px;
+  }
+  #overlay p { 
+    color: #fcc; 
+    margin-bottom: 16px; 
+    font-size: 13px; 
+    text-align: center; 
+    padding: 0 20px;
+    line-height: 1.6;
+  }
+  #overlay button {
+    background: #e83800; 
+    color: #fff; 
+    border: 2px solid #fc9838; 
+    padding: 12px 28px;
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-family: inherit; 
+    font-size: 16px;
+    min-height: 48px;
+    box-shadow: 0 0 10px rgba(232,56,0,0.5);
+  }
+  #overlay button:hover { background: #fc9838; color: #001; }
+  #overlay.hidden { display: none; }
+  
+  @media (max-width: 700px) {
+    #controls { width: 220px; font-size: 10px; }
+    #hud .stat { font-size: 10px; padding: 2px 5px; }
+    #jumpBtn { width: 70px; height: 70px; font-size: 22px; }
+    #dashBtn { width: 55px; height: 55px; font-size: 12px; }
+  }
+  
+  @media (hover: none) and (pointer: coarse) {
+    #togglePanel { display: block; }
+  }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud">
+  <div class="stat">Score: <b id="score">0</b></div>
+  <div class="stat">Coins: <b id="coins">0</b></div>
+  <div class="stat">World: <b id="world">1-1</b></div>
+  <div class="stat">Lives: <b id="lives">3</b></div>
+  <div class="stat">FPS: <b id="fps">0</b></div>
+</div>
+
+<button id="togglePanel">☰</button>
+
+<div id="controls">
+  <h3>Parameters</h3>
+  <div class="row"><label>Gravity</label><input type="range" id="gravity" min="0.3" max="1.2" step="0.05" value="0.6"><span class="val" id="gravityV">0.60</span></div>
+  <div class="row"><label>Jump Force</label><input type="range" id="jumpForce" min="8" max="18" step="0.5" value="13"><span class="val" id="jumpForceV">13.0</span></div>
+  <div class="row"><label>Move Speed</label><input type="range" id="moveSpeed" min="2" max="8" step="0.5" value="4.5"><span class="val" id="moveSpeedV">4.5</span></div>
+  <div class="row"><label>Enemy Speed</label><input type="range" id="enemySpeed" min="0.5" max="3" step="0.25" value="1.25"><span class="val" id="enemySpeedV">1.25</span></div>
+  <div class="btns">
+    <button id="pauseBtn">Pause</button>
+    <button id="restartBtn">Restart</button>
+    <button id="particleBtn" class="active">Particles</button>
+    <button id="soundBtn" class="active">Sound</button>
+  </div>
+</div>
+
+<div id="mobileControls">
+  <div id="moveArea">
+    <div id="joystickBase"></div>
+    <div id="joystickKnob"></div>
+  </div>
+  
+  <div id="jumpBtn" class="touch-btn">⬆</div>
+  <div id="dashBtn" class="touch-btn">RUN</div>
+  <div id="pauseBtnMobile" class="touch-btn">⏸</div>
+</div>
+
+<div id="overlay">
+  <h1 id="overlayTitle">SUPER MARIO JS</h1>
+  <p id="overlayText">
+    <b>Desktop:</b> Arrow keys / WASD to Move & Jump<br>
+    Space / W = Jump | Shift = Run / Dash<br>
+    <b>Mobile:</b> Left side = Swipe/Joystick to Move<br>
+    ⬆ Jump button | RUN = Dash speed<br>
+    Stomp Goombas, collect coins & reach the flag!
+  </p>
+  <button id="overlayBtn">START GAME</button>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---------- Canvas Setup ----------
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+
+  let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---------- Audio Synthesizer ----------
+  let audioCtx = null;
+  let soundEnabled = true;
+  function ensureAudio() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch (e) { audioCtx = null; }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function synthBeep(freq, dur, type='square', vol=0.05, slideTo=null) {
+    if (!soundEnabled || !audioCtx) return;
+    const t = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    if (slideTo !== null) osc.frequency.exponentialRampToValueAtTime(Math.max(40, slideTo), t + dur);
+    gain.gain.setValueAtTime(vol, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(t);
+    osc.stop(t + dur + 0.02);
+  }
+
+  function haptic(duration = 40) {
+    if (navigator.vibrate) navigator.vibrate(duration);
+  }
+
+  // ---------- Game Parameters & State ----------
+  const params = {
+    gravity: 0.6,
+    jumpForce: 13,
+    moveSpeed: 4.5,
+    enemySpeed: 1.25
+  };
+
+  const state = {
+    paused: false,
+    running: false,
+    gameOver: false,
+    particlesEnabled: true,
+    score: 0,
+    coins: 0,
+    lives: 3,
+    cameraX: 0,
+    shakeTime: 0,
+    shakeMag: 0,
+    announcements: []
+  };
+
+  // Mario Player Object
+  const mario = {
+    x: 100, y: 300, w: 28, h: 36,
+    vx: 0, vy: 0,
+    speed: 4.5,
+    grounded: false,
+    facing: 1, // 1 = right, -1 = left
+    isSuper: false
+  };
+
+  let blocks = [];
+  let enemies = [];
+  let items = []; // coins, mushrooms, flag
+  const particles = [];
+
+  // ---------- Level Generation ----------
+  function initLevel() {
+    mario.x = 80; mario.y = 200; mario.vx = 0; mario.vy = 0;
+    state.cameraX = 0;
+    blocks = [];
+    enemies = [];
+    items = [];
+    particles.length = 0;
+
+    const groundY = H - 80;
+
+    // Ground chunks (gaps included)
+    for (let x = 0; x < 4000; x += 40) {
+      // Create a small gap at 1200 and 2600
+      if ((x > 1160 && x < 1320) || (x > 2560 && x < 2720)) continue;
+      blocks.push({ x, y: groundY, w: 40, h: 100, type: 'ground' });
+    }
+
+    // Platforms, Bricks, Question Blocks & Pipes
+    const structures = [
+      { type: 'pipe', x: 500, y: groundY - 60, w: 50, h: 60 },
+      { type: 'brick', x: 700, y: groundY - 130, w: 35, h: 35, hasCoin: true },
+      { type: 'qblock', x: 735, y: groundY - 130, w: 35, h: 35, item: 'coin' },
+      { type: 'brick', x: 770, y: groundY - 130, w: 35, h: 35, hasCoin: true },
+      
+      { type: 'pipe', x: 1000, y: groundY - 90, w: 50, h: 90 },
+      
+      { type: 'qblock', x: 1450, y: groundY - 140, w: 35, h: 35, item: 'mushroom' },
+      { type: 'brick', x: 1485, y: groundY - 140, w: 35, h: 35 },
+      
+      { type: 'pipe', x: 1800, y: groundY - 120, w: 50, h: 120 },
+      { type: 'qblock', x: 2100, y: groundY - 150, w: 35, h: 35, item: 'coin' },
+      { type: 'brick', x: 2135, y: groundY - 150, w: 35, h: 35, hasCoin: true },
+
+      { type: 'pipe', x: 2900, y: groundY - 80, w: 50, h: 80 },
+      { type: 'brick', x: 3200, y: groundY - 140, w: 35, h: 35, hasCoin: true },
+      { type: 'qblock', x: 3235, y: groundY - 140, w: 35, h: 35, item: 'mushroom' },
+
+      // Flagpole at the end
+      { type: 'flagpole', x: 3750, y: groundY - 260, w: 10, h: 260 }
+    ];
+
+    blocks.push(...structures.filter(s => s.type !== 'qblock'));
+    // Separate qblocks so we can track state
+    structures.filter(s => s.type === 'qblock').forEach(qb => {
+      blocks.push({ ...qb, hit: false });
+    });
+
+    // Goombas (Enemies)
+    const goombaSpawns = [550, 1080, 1600, 2000, 2300, 3000, 3400];
+    goombaSpawns.forEach(gx => {
+      enemies.push({ x: gx, y: groundY - 28, w: 28, h: 28, vx: -params.enemySpeed, vy: 0, alive: true, type: 'goomba' });
+    });
+  }
+
+  // ---------- FX & Particle Helpers ----------
+  function spawnParticles(x, y, color) {
+    if (!state.particlesEnabled) return;
+    for (let i = 0; i < 6; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = Math.random() * 4 + 1;
+      particles.push({
+        x, y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
+        life: 0.5, maxLife: 0.5, color, size: Math.random() * 4 + 2
+      });
+    }
+  }
+
+  function shake(mag, dur) {
+    state.shakeMag = Math.max(state.shakeMag, mag);
+    state.shakeTime = Math.max(state.shakeTime, dur);
+  }
+
+  function announce(text, color='#fc9838', duration=1.5) {
+    state.announcements.push({ text, color, life: duration, maxLife: duration });
+  }
+
+  // ---------- Input & Controls ----------
+  const keys = {};
+  let dashActive = false;
+
+  window.addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if (['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault();
+    ensureAudio();
+    if (keys[k]) return;
+    keys[k] = true;
+
+    if (!state.running || state.paused) return;
+    if ((k === 'arrowup' || k === 'w' || k === ' ') && mario.grounded) {
+      mario.vy = -params.jumpForce;
+      mario.grounded = false;
+      synthBeep(450, 0.12, 'square', 0.08, 750);
+    }
+    if (k === 'shift') dashActive = true;
+  });
+
+  window.addEventListener('keyup', e => {
+    const k = e.key.toLowerCase();
+    keys[k] = false;
+    if (k === 'shift') dashActive = false;
+  });
+
+  // Mobile Touch Controls
+  const moveArea = document.getElementById('moveArea');
+  const jBase = document.getElementById('joystickBase');
+  const jKnob = document.getElementById('joystickKnob');
+  let touchId = null, startX = 0, startY = 0, currentDir = 0;
+
+  moveArea.addEventListener('touchstart', e => {
+    if (touchId !== null) return;
+    const t = e.changedTouches[0];
+    touchId = t.identifier;
+    startX = t.clientX; startY = t.clientY;
+    jBase.style.display = 'block'; jKnob.style.display = 'block';
+    jBase.style.left = (startX - 60) + 'px'; jBase.style.top = (startY - 60) + 'px';
+    jKnob.style.left = (startX - 25) + 'px'; jKnob.style.top = (startY - 25) + 'px';
+    haptic(15);
+    e.preventDefault();
+  }, { passive: false });
+
+  moveArea.addEventListener('touchmove', e => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === touchId) {
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+        const dist = Math.hypot(dx, dy);
+        const maxR = 50;
+        const clampX = dist > maxR ? (dx / dist) * maxR : dx;
+        const clampY = dist > maxR ? (dy / dist) * maxR : dy;
+        jKnob.style.left = (startX - 25 + clampX) + 'px';
+        jKnob.style.top = (startY - 25 + clampY) + 'px';
+
+        currentDir = clampX > 10 ? 1 : (clampX < -10 ? -1 : 0);
+        break;
+      }
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  function endTouch() {
+    touchId = null;
+    currentDir = 0;
+    jBase.style.display = 'none';
+    jKnob.style.display = 'none';
+  }
+  moveArea.addEventListener('touchend', endTouch);
+  moveArea.addEventListener('touchcancel', endTouch);
+
+  document.getElementById('jumpBtn').addEventListener('touchstart', e => {
+    if (mario.grounded && state.running && !state.paused) {
+      mario.vy = -params.jumpForce;
+      mario.grounded = false;
+      synthBeep(450, 0.12, 'square', 0.08, 750);
+      haptic(30);
+    }
+    e.preventDefault();
+  });
+
+  const dashBtn = document.getElementById('dashBtn');
+  dashBtn.addEventListener('touchstart', e => {
+    dashActive = !dashActive;
+    dashBtn.classList.toggle('active', dashActive);
+    haptic(20);
+    e.preventDefault();
+  });
+
+  const pauseBtnMobile = document.getElementById('pauseBtnMobile');
+  pauseBtnMobile.addEventListener('touchstart', e => {
+    togglePause();
+    e.preventDefault();
+  });
+
+  // ---------- UI & Overlay Bindings ----------
+  function bindSlider(id, key, fmt) {
+    const el = document.getElementById(id);
+    const vEl = document.getElementById(id + 'V');
+    el.value = params[key];
+    vEl.textContent = fmt ? fmt(params[key]) : params[key];
+    el.addEventListener('input', () => {
+      params[key] = parseFloat(el.value);
+      vEl.textContent = fmt ? fmt(params[key]) : params[key];
+    });
+  }
+  bindSlider('gravity', 'gravity', v => v.toFixed(2));
+  bindSlider('jumpForce', 'jumpForce', v => v.toFixed(1));
+  bindSlider('moveSpeed', 'moveSpeed', v => v.toFixed(1));
+  bindSlider('enemySpeed', 'enemySpeed', v => v.toFixed(2));
+
+  function togglePause() {
+    state.paused = !state.paused;
+    pauseBtn.textContent = state.paused ? 'Resume' : 'Pause';
+    pauseBtn.classList.toggle('active', state.paused);
+    pauseBtnMobile.textContent = state.paused ? '▶' : '⏸';
+    pauseBtnMobile.classList.toggle('active', state.paused);
+  }
+
+  const pauseBtn = document.getElementById('pauseBtn');
+  pauseBtn.addEventListener('click', togglePause);
+  document.getElementById('restartBtn').addEventListener('click', resetGame);
+  
+  const particleBtn = document.getElementById('particleBtn');
+  particleBtn.addEventListener('click', () => {
+    state.particlesEnabled = !state.particlesEnabled;
+    particleBtn.classList.toggle('active', state.particlesEnabled);
+  });
+  
+  const soundBtn = document.getElementById('soundBtn');
+  soundBtn.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    soundBtn.classList.toggle('active', soundEnabled);
+    ensureAudio();
+  });
+
+  document.getElementById('togglePanel').addEventListener('click', () => {
+    document.getElementById('controls').classList.toggle('hidden');
+  });
+
+  const overlay = document.getElementById('overlay');
+  const overlayBtn = document.getElementById('overlayBtn');
+  overlayBtn.addEventListener('click', () => {
+    ensureAudio();
+    if (state.gameOver) resetGame();
+    overlay.classList.add('hidden');
+    state.running = true;
+    state.paused = false;
+    haptic(50);
+  });
+
+  function showOverlay(title, text, btn='START') {
+    document.getElementById('overlayTitle').textContent = title;
+    document.getElementById('overlayText').innerHTML = text;
+    overlayBtn.textContent = btn;
+    overlay.classList.remove('hidden');
+  }
+
+  function updateHUD() {
+    document.getElementById('score').textContent = state.score;
+    document.getElementById('coins').textContent = state.coins;
+    document.getElementById('world').textContent = "1-1";
+    document.getElementById('lives').textContent = state.lives;
+  }
+
+  function resetGame() {
+    state.score = 0;
+    state.coins = 0;
+    state.lives = 3;
+    state.gameOver = false;
+    state.shakeTime = 0;
+    mario.isSuper = false;
+    mario.w = 28; mario.h = 36;
+    initLevel();
+    updateHUD();
+  }
+
+  // ---------- Physics & Collision Engine ----------
+  function AABB(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  }
+
+  function update(dt) {
+    if (!state.running || state.paused || state.gameOver) return;
+
+    // Movement input
+    let moveDir = currentDir;
+    if (keys['arrowleft'] || keys['a']) moveDir = -1;
+    if (keys['arrowright'] || keys['d']) moveDir = 1;
+
+    const currentSpd = params.moveSpeed * (dashActive ? 1.6 : 1);
+    mario.vx = moveDir * currentSpd;
+    if (moveDir !== 0) mario.facing = moveDir;
+
+    // Apply gravity
+    mario.vy += params.gravity;
+
+    // X Axis Physics & Collision
+    mario.x += mario.vx;
+    for (const b of blocks) {
+      if (AABB(mario, b)) {
+        if (mario.vx > 0) mario.x = b.x - mario.w;
+        else if (mario.vx < 0) mario.x = b.x + b.w;
+      }
+    }
+
+    // Y Axis Physics & Collision
+    mario.grounded = false;
+    mario.y += mario.vy;
+    for (const b of blocks) {
+      if (AABB(mario, b)) {
+        if (mario.vy > 0) { // Landing on top
+          mario.y = b.y - mario.h;
+          mario.vy = 0;
+          mario.grounded = true;
+          
+          // Check flagpole win condition
+          if (b.type === 'flagpole') {
+            state.score += 1000;
+            announce('STAGE CLEAR!', '#fc9838', 2.0);
+            synthBeep(880, 0.4, 'triangle', 0.1, 1320);
+            setTimeout(() => { resetGame(); }, 2000);
+          }
+        } else if (mario.vy < 0) { // Hitting ceiling / block from below
+          mario.y = b.y + b.h;
+          mario.vy = 0;
+          
+          if (b.type === 'qblock' && !b.hit) {
+            b.hit = true;
+            synthBeep(990, 0.1, 'sine', 0.08);
+            if (b.item === 'coin') {
+              state.coins++;
+              state.score += 200;
+              updateHUD();
+            } else if (b.item === 'mushroom') {
+              mario.isSuper = true;
+              mario.h = 50;
+              state.score += 1000;
+              announce('SUPER MARIO!', '#fc9838', 1.5);
+            }
+          } else if (b.type === 'brick') {
+            synthBeep(180, 0.08, 'sawtooth', 0.06);
+            spawnParticles(b.x + b.w/2, b.y + b.h/2, '#c84c0c');
+          }
+        }
+      }
+    }
+
+    // Fall into pit check
+    if (mario.y > H + 50) {
+      loseLife();
+    }
+
+    // Camera follow Mario
+    state.cameraX = mario.x - W * 0.35;
+    if (state.cameraX < 0) state.cameraX = 0;
+
+    // Update Enemies (Goombas)
+    for (const en of enemies) {
+      if (!en.alive) continue;
+      en.x += en.vx;
+      en.vy += params.gravity;
+      en.y += en.vy;
+
+      // Enemy block collision
+      for (const b of blocks) {
+        if (AABB(en, b)) {
+          if (en.vy > 0) { en.y = b.y - en.h; en.vy = 0; }
+          if (en.vx > 0) { en.x = b.x - en.w; en.vx *= -1; }
+          else if (en.vx < 0) { en.x = b.x + b.w; en.vx *= -1; }
+        }
+      }
+
+      // Mario vs Enemy collision
+      if (AABB(mario, en)) {
+        if (mario.vy > 0 && mario.y + mario.h - mario.vy <= en.y + 12) {
+          // Stomp Goomba
+          en.alive = false;
+          mario.vy = -8;
+          state.score += 100;
+          updateHUD();
+          synthBeep(300, 0.08, 'square', 0.08, 150);
+          spawnParticles(en.x + en.w/2, en.y + en.h/2, '#e83800');
+        } else {
+          // Mario gets hurt
+          if (mario.isSuper) {
+            mario.isSuper = false;
+            mario.h = 36;
+            mario.y += 14;
+            synthBeep(200, 0.2, 'sawtooth', 0.1);
+            shake(8, 0.3);
+          } else {
+            loseLife();
+            break;
+          }
+        }
+      }
+    }
+
+    // Shake decay & particle updates
+    if (state.shakeTime > 0) state.shakeTime -= dt;
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.life -= dt;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    for (let i = state.announcements.length - 1; i >= 0; i--) {
+      state.announcements[i].life -= dt;
+      if (state.announcements[i].life <= 0) state.announcements.splice(i, 1);
+    }
+  }
+
+  function loseLife() {
+    state.lives--;
+    updateHUD();
+    synthBeep(120, 0.5, 'sawtooth', 0.15, 40);
+    shake(15, 0.5);
+    if (state.lives <= 0) {
+      state.gameOver = true;
+      state.running = false;
+      showOverlay("GAME OVER", `Final Score: <b>${state.score}</b><br>Coins Collected: <b>${state.coins}</b>`, "RESTART");
+    } else {
+      initLevel();
+    }
+  }
+
+  // ---------- Rendering Engine ----------
+  let lastTime = performance.now();
+  let frameCount = 0, fpsTimer = 0;
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.save();
+    if (state.shakeTime > 0) {
+      const dx = (Math.random() - 0.5) * state.shakeMag;
+      const dy = (Math.random() - 0.5) * state.shakeMag;
+      ctx.translate(dx, dy);
+    }
+
+    ctx.translate(-state.cameraX, 0);
+
+    // Draw Background Hills / Clouds (Parallax effect)
+    ctx.fillStyle = '#4c84dc';
+    ctx.fillRect(state.cameraX + 200, H - 280, 120, 100);
+    ctx.fillRect(state.cameraX + 800, H - 320, 160, 140);
+    ctx.fillRect(state.cameraX + 1800, H - 300, 140, 120);
+
+    // Draw Blocks
+    for (const b of blocks) {
+      if (b.x + b.w < state.cameraX - 50 || b.x > state.cameraX + W + 50) continue;
+      
+      if (b.type === 'ground') {
+        ctx.fillStyle = '#c84c0c';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.fillStyle = '#fc9838';
+        ctx.fillRect(b.x, b.y, b.w, 10);
+      } else if (b.type === 'brick') {
+        ctx.fillStyle = '#c84c0c';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+      } else if (b.type === 'qblock') {
+        ctx.fillStyle = b.hit ? '#888' : '#fc9838';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+        if (!b.hit) {
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 18px monospace';
+          ctx.fillText('?', b.x + 11, b.y + 25);
+        }
+      } else if (b.type === 'pipe') {
+        ctx.fillStyle = '#00a800';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+        ctx.fillRect(b.x - 4, b.y, b.w + 8, 16);
+        ctx.strokeRect(b.x - 4, b.y, b.w + 8, 16);
+      } else if (b.type === 'flagpole') {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.fillStyle = '#00a800';
+        ctx.beginPath();
+        ctx.arc(b.x + 5, b.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Draw Enemies (Goombas)
+    for (const en of enemies) {
+      if (!en.alive || en.x + en.w < state.cameraX - 50 || en.x > state.cameraX + W + 50) continue;
+      ctx.fillStyle = '#884400';
+      ctx.fillRect(en.x, en.y, en.w, en.h);
+      // Goomba eyes
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(en.x + 4, en.y + 6, 6, 8);
+      ctx.fillRect(en.x + 18, en.y + 6, 6, 8);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(en.x + 6, en.y + 9, 3, 4);
+      ctx.fillRect(en.x + 20, en.y + 9, 3, 4);
+    }
+
+    // Draw Mario
+    ctx.fillStyle = mario.isSuper ? '#00f2fe' : '#e83800';
+    ctx.fillRect(mario.x, mario.y, mario.w, mario.h);
+    // Overalls & Hat accents
+    ctx.fillStyle = '#0055ff';
+    ctx.fillRect(mario.x + 4, mario.y + mario.h - 14, mario.w - 8, 14);
+    ctx.fillStyle = mario.isSuper ? '#00f2fe' : '#e83800';
+    ctx.fillRect(mario.x + (mario.facing > 0 ? 14 : 0), mario.y + 4, 14, 10);
+
+    // Draw Particles
+    for (const p of particles) {
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.life / p.maxLife;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
+    ctx.globalAlpha = 1.0;
+
+    // Draw Announcements
+    for (const a of state.announcements) {
+      ctx.fillStyle = a.color;
+      ctx.font = 'bold 24px monospace';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 6;
+      ctx.fillText(a.text, state.cameraX + W / 2, H * 0.35);
+      ctx.shadowBlur = 0;
+    }
+
+    ctx.restore();
+  }
+
+  function loop(now) {
+    const dt = Math.min((now - lastTime) / 1000, 0.1);
+    lastTime = now;
+
+    frameCount++;
+    fpsTimer += dt;
+    if (fpsTimer >= 1.0) {
+      document.getElementById('fps').textContent = frameCount;
+      frameCount = 0;
+      fpsTimer = 0;
+    }
+
+    update(dt);
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  // ---------- Initialize ----------
+  resetGame();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
